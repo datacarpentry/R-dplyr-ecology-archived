@@ -58,7 +58,7 @@ You can easily select multiple columns by adding the names as additional argumen
 select(surveys, hindfoot_length, species_id)
 ```
 
-## Filtering rows out of data
+## Filtering rows of data
 
 When analyzing data, though, we often want to look at partial statistics, such
 as the maximum value of a variable per species or the average value per plot.
@@ -77,6 +77,43 @@ Filtering on multiple criteria (column names) can be done by adding extra filter
 surveys_DM <- filter(surveys, species_id == "DM", year=="2002")
 ```
 
+<!---
+If you want to include e.g. multiple species, you can use a boolean operator OR ("|"):
+```{r filter_or, purl=FALSE}
+surveys_DO_DM <- filter(surveys, species_id == "DO" | species_id == "DM", year == "1977")
+```
+-->
+
+## Adding a column to our dataset
+
+Sometimes, you may have to add a new column to your dataset that represents a
+new variable, based on existing columns. You can do this using the function `mutate()`. 
+
+Here we will add a column, converting the hindfoot_length from mm to cm:
+
+```{r mutate}
+surveys_plus <- mutate(surveys, hindfoot_length_cm = hindfoot_length / 10)
+head(surveys_plus)
+
+```
+
+> ## Challenge Title {.challenge}
+> 
+> 1. Add a column calculating the ratio of hindfoot_lenght and weight. 
+<!---
+>
+> ```{r, results='show'}
+> surveys_plus <- mutate(surveys, ratio = hindfoot_length / weight)
+> ```
+-->
+>
+> 1. Because the weight and hindfoot_length is not known for all data, you can filter the data to see some results:
+<!---
+> ```{r}
+> head(filter(surveys_plus, weight > 100, hindfoot_length > 10))
+> ```
+-->
+
 
 
 
@@ -88,11 +125,6 @@ surveys_DM <- filter(surveys, species_id == "DM", year=="2002")
 or an image from the `figs` directory:
 
 ![this is the image's title](fig/example.svg "this is the image's alt text")
-
-> ## Challenge Title {.challenge}
->
-> Description of a single challenge.
-> There may be several challenges.
 
 
 
