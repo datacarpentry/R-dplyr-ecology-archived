@@ -1,0 +1,26 @@
+---
+layout: page
+title: Lesson Title
+subtitle: Topic Title One
+minutes: 10
+---
+
+> ## Learning Objectives {.objectives}
+>
+> * Learning objective 1
+> * Learning objective 2
+
+```{r check-data, echo=FALSE}
+if (!file.exists("data/surveys.csv")) {
+    download.file("http://files.figshare.com/1919744/surveys.csv",
+                  "data/surveys.csv")
+}
+if (!file.exists("data/species.csv")) {
+    download.file("http://files.figshare.com/1919741/species.csv",
+                  "data/species.csv")
+}
+```
+
+```{r}
+surveys <- read.csv(file="data/surveys.csv")
+```
