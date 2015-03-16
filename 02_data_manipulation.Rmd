@@ -1,0 +1,98 @@
+---
+layout: page
+title: Lesson Title
+subtitle: Topic Title One
+minutes: 10
+---
+> ## Learning Objectives {.objectives}
+>
+> * being able to subset for a level
+> * being able to extract particular values from a `data.frame`
+> * being able to add/remove columns and rows
+
+# Data manipulation
+
+## Load data
+
+```{r check-data, echo=FALSE}
+if (!file.exists("data/surveys.csv")) {
+    download.file("http://files.figshare.com/1919744/surveys.csv",
+                  "data/surveys.csv")
+}
+if (!file.exists("data/species.csv")) {
+    download.file("http://files.figshare.com/1919741/species.csv",
+                  "data/species.csv")
+}
+```
+
+```{r dplyr.init}
+# install.packages("dplyr")
+library(dplyr)
+```
+
+```{r}
+surveys <- read.csv(file="data/surveys.csv")
+```
+
+## Selecting columns of data
+
+In particular for larger datasets, it can be tricky to remember the column
+number that corresponds to a particular variable. (is hindfoot length in column 7
+or 9? oh, right... they are in column 8). In some cases, in which column the
+variable will be can change if the script you are using adds or removes
+columns. It's therefore often better to use column names to refer to a
+particular variable, and it makes your code easier to read and your intentions
+clearer.
+
+You can do operations on a particular column, by selecting it using the `select()` function. 
+The first argument is the data frame, the second argument the column name you want to select.
+You can use `names(surveys)` or `colnames(surveys)` to remind yourself of the column names.
+
+```{r select}
+select(surveys, hindfoot_length)
+```
+
+You can easily select multiple columns by adding the names as additional arguments.
+
+```{r select_mult}
+select(surveys, hindfoot_length, species_id)
+```
+
+## Filtering rows out of data
+
+When analyzing data, though, we often want to look at partial statistics, such
+as the maximum value of a variable per species or the average value per plot.
+
+One way to do this is to filter the data we want, and create a new temporary
+data frame, using the `filter()` function. For instance, if we just want to look at
+the animals of the species "DO":
+
+```{r filter, purl=FALSE}
+surveys_DO <- filter(surveys, species_id == "DO")
+```
+
+Filtering on multiple criteria (column names) can be done by adding extra filters:
+
+```{r filter_mult, purl=FALSE}
+surveys_DM <- filter(surveys, species_id == "DM", year=="2002")
+```
+
+
+
+
+
+> ## Callout Box {.callout}
+>
+> An aside of some kind.
+
+or an image from the `figs` directory:
+
+![this is the image's title](fig/example.svg "this is the image's alt text")
+
+> ## Challenge Title {.challenge}
+>
+> Description of a single challenge.
+> There may be several challenges.
+
+
+
