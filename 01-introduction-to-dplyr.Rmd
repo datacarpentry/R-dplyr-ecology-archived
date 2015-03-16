@@ -1,9 +1,32 @@
 ---
 layout: topic
-title: Introduction to R
+title: Introduction to dplyr
 minutes: 45
 ---
 
 ```{r, echo=FALSE, purl=FALSE}
 knitr::opts_chunk$set(results='hide', fig.path='img/r-lesson-')
 ```
+
+[`dplyr`](https://github.com/hadley/dplyr) package offers simple, clear and 
+efficient way of working with your data. Repeating from the package
+[vignette](https://github.com/hadley/dplyr/blob/master/vignettes/introduction.Rmd):
+
+When working with data you must:
+
+* Figure out what you want to do.
+* Precisely describe what you want in the form of a computer program.
+* Execute the code.
+
+The `dplyr` package makes each of these steps as fast and easy as possible by:
+
+* Elucidating the most common data manipulation operations, so that your
+  options are helpfully constrained when thinking about how to tackle a
+  problem.
+* Providing simple functions that correspond to the most common
+  data manipulation verbs, so that you can easily translate your thoughts
+  into code.
+* Using efficient data storage backends, so that you spend as little time
+  waiting for the computer as possible.
+  
+
