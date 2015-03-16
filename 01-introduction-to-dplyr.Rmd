@@ -8,6 +8,14 @@ minutes: 45
 knitr::opts_chunk$set(results='hide', fig.path='img/r-lesson-')
 ```
 
+> ## Learning Objectives
+>
+> * Familiarize participants with dplyr package
+> * Understand the data manipulation verbs used in dplyr
+> * Understand the concept of piping
+
+## dplyr
+
 [`dplyr`](https://github.com/hadley/dplyr) package offers simple, clear and 
 efficient way of working with your data. Repeating from the package
 [vignette](https://github.com/hadley/dplyr/blob/master/vignettes/introduction.Rmd):
@@ -29,4 +37,3 @@ The `dplyr` package makes each of these steps as fast and easy as possible by:
 * Using efficient data storage backends, so that you spend as little time
   waiting for the computer as possible.
   
-
