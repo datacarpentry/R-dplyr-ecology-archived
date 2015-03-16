@@ -43,7 +43,7 @@ file.
 * download [the data file`"surveys.csv"`](https://github.com/datacarpentry/datacarpentry/raw/master/data/biology/surveys.csv) from Figshare
 * put it in directory `"data"` within your working directory for these exercises
 
-```{r load-or-download-data, echo=FALSE, purl=TRUE}
+```{r download-data, echo=FALSE, purl=TRUE}
 if (!file.exists("data/surveys.csv")) {
     download.file("http://files.figshare.com/1919744/surveys.csv",
                   "data/surveys.csv")
@@ -56,6 +56,30 @@ if (!file.exists("data/species.csv")) {
 
 Next, read the `surveys.csv` into memory using `read.csv()`:
 
-```{r demo-data-load, eval=FALSE,  purl=FALSE}
+```{r demo-data-load, eval=TRUE,  purl=FALSE}
 surveys <- read.csv('data/surveys.csv')
 ```
+
+__At this point, make sure all participants have the data loaded__
+
+This statement doesn't produce any output because assignment doesn't display
+anything. If we want to check that our data has been loaded, we can print the
+variable's value: `surveys`
+
+Wow... that was a lot of output. At least it means the data loaded
+properly. Let's check the top (the first 6 lines) of this `data.frame` using the
+function `head()`:
+
+```{r, results='show', purl=FALSE}
+head(surveys)
+```
+
+Let's now check the **str**ucture of this `data.frame` in more details with the
+function `str()`:
+
+```{r, purl=FALSE}
+str(surveys)
+```
+
+__Also, show how to get this information from the "Environment" tab in RStudio.__
+
