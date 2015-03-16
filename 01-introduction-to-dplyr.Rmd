@@ -158,3 +158,17 @@ are better than using simple integer labels because factors are self describing:
 is low?  You wouldn't be able to tell with just integer data. Factors have this
 information built in. It is particularly helpful when there are many levels
 (like the species in our example data set).
+
+### Converting factors
+
+If you need to convert a factor to a character vector, simply use
+`as.character(x)`.
+
+Converting a factor to a numeric vector is however a little trickier, and you
+have to go via a character vector. Compare:
+
+```{r, purl=TRUE}
+f <- factor(c(1, 5, 10, 2))
+as.numeric(f)               ## wrong! and there is no warning...
+as.numeric(as.character(f)) ## works...
+as.numeric(levels(f))[f]    ## The recommended way.
