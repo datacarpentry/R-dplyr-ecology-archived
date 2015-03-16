@@ -15,7 +15,6 @@ knitr::opts_chunk$set(results='hide', fig.path='img/r-lesson-')
 > * explore the structure and the content of the data in R
 > * understand what are factors and how to manipulate them
 
-
 # Presentation of the Survey Data
 
 ```{r, echo=FALSE, purl=TRUE}
@@ -41,5 +40,22 @@ To load our survey data, we need to locate the `surveys.csv` file. We will use
 `read.csv()` to load into memory (as a `data.frame`) the content of the CSV
 file.
 
-* download [the data file`"surveys.csv"`](https://github.com/datacarpentry/datacarpentry/raw/master/data/biology/surveys.csv) from Figshsare
+* download [the data file`"surveys.csv"`](https://github.com/datacarpentry/datacarpentry/raw/master/data/biology/surveys.csv) from Figshare
 * put it in directory `"data"` within your working directory for these exercises
+
+```{r load-or-download-data, echo=FALSE, purl=TRUE}
+if (!file.exists("data/surveys.csv")) {
+    download.file("http://files.figshare.com/1919744/surveys.csv",
+                  "data/surveys.csv")
+}
+if (!file.exists("data/species.csv")) {
+    download.file("http://files.figshare.com/1919741/species.csv",
+                  "data/species.csv")
+}
+```
+
+Next, read the `surveys.csv` into memory using `read.csv()`:
+
+```{r demo-data-load, eval=FALSE,  purl=FALSE}
+surveys <- read.csv('data/surveys.csv')
+```
