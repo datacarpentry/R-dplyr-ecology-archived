@@ -130,3 +130,33 @@ To select rows by position, use `slice()`:
 ```{r, results='show', purl=FALSE}
 slice(surveys, 1:10)
 ```
+
+## Arrange rows with `arrange()`
+
+```{r, echo=FALSE, purl=TRUE}
+### Arrange rows with `arrange()`
+```
+
+`arrange()` works similarly to `filter()` except that instead of filtering or 
+selecting rows, it reorders them. It takes a data frame, and a set of column 
+names (or more complicated expressions) to order by. If you provide more than 
+one column name, each additional column will be used to break ties in the values 
+of preceding columns:
+
+```{r, results='show', purl=FALSE}
+arrange(surveys, year, month, day)
+```
+
+Use `desc()` to order a column in descending order:
+
+```{r, results='show', purl=FALSE}
+arrange(surveys, desc(hindfoot_length))
+```
+
+`arrange()` is a straighforward wrapper around `order()` that requires less 
+typing. The previous code is equivalent to:
+
+```{r, eval = FALSE, purl=FALSE}
+surveys[order(surveys$year, surveys$month, surveys$day), ]
+surveys[order(desc(surveys$hindfoot_length)), ]
+```
