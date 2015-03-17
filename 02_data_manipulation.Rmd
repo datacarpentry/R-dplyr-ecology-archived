@@ -4,13 +4,13 @@ title: R dplyr ecology
 subtitle: Data manipulation
 minutes: 45
 ---
+
 > ## Learning Objectives {.objectives}
 >
 > * being able to select a column from a data frame
-> * being able to filter rows on a specific criterium
+> * being able to filter rows on specific criteria
+> * being able to order rows on specific criteria
 > * being able to add a column as a function of existing columns
-
-# Data manipulation
 
 ## Load data
 
@@ -46,18 +46,27 @@ columns. It's therefore often better to use column names to refer to a
 particular variable, and it makes your code easier to read and your intentions
 clearer.
 
-You can do operations on a particular column, by selecting it using the `select()` function. 
+In the introduction to R, we have covered a first way of selecting columns, using the `$` sign.
+If you want to look at the result, you can use head().
+
+```{r dollar}
+hindfoot_length_column <- surveys$hindfoot_length
+# look at the data in the variable hindfoot_length_column
+head(hindfoot_length_column)
+```
+
+Using dplyr, you can do operations on a particular column, by selecting it using the `select()` function. 
 The first argument is the data frame, the second argument the column name you want to select.
 You can use `names(surveys)` or `colnames(surveys)` to remind yourself of the column names.
 
 ```{r select}
-select(surveys, hindfoot_length)
+hindfoot_length_column <- select(surveys, hindfoot_length)
 ```
 
 You can easily select multiple columns by adding the names as additional arguments.
 
 ```{r select_mult}
-select(surveys, hindfoot_length, species_id)
+hindfoot_length_species_columns <- select(surveys, hindfoot_length, species_id)
 ```
 
 ## Filtering rows of data
@@ -79,10 +88,11 @@ Filtering on multiple criteria (column names) can be done by adding extra filter
 surveys_DM <- filter(surveys, species_id == "DM", year=="2002")
 ```
 
-> ## Challenge Title {.challenge}
+> ## Challenge filtering rows on multiple factors
 > 
 > 1. Filter rows on two different species e.g. both DO and DM
-> Have a look at the [Introduction to dplyr](http://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html) for a hint.
+>
+> Have a look at the [Introduction to dplyr](http://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html#filter-rows-with-filter) for a hint.
 
 <!---
 If you want to include e.g. multiple species, you can use a boolean operator OR ("|"):
@@ -111,19 +121,18 @@ surveys_desc <- arrange(surveys, desc(weight))
 head(surveys_desc)
 ```
 
-> ## Challenge Title {.challenge}
+> ## Challenge ordering of rows
 > 
 > 1. Arrange the surveys so you see the most recent month first, ascendingly according to the day
 > 
-<!---
 
+<!---
 ```{r arrange_challenge}
 surveys_challenge <- arrange(surveys, desc(year), desc(month), day)
 # have a look at the data
 head(surveys_challenge)
 ```
 -->
-
 
 ## Adding a column to our dataset
 
@@ -138,9 +147,10 @@ head(surveys_plus)
 
 ```
 
-> ## Challenge Title {.challenge}
+> ## Challenge adding column
 > 
 > 1. Add a column calculating the ratio of hindfoot_lenght and weight. 
+
 <!---
 >
 > ```{r, results='show'}
@@ -148,8 +158,7 @@ head(surveys_plus)
 > ```
 -->
 
->
-> 1. Because the weight and hindfoot_length is not known for all data, you can first filter the data to see some more meaningful results.
+> 2. Because the weight and hindfoot_length is not known for all data, you can first filter the data to see some more meaningful results.
 Select for rows where the weight is above 100 g and the hindfoot_length is longer than 10 mm.
 
 <!---
