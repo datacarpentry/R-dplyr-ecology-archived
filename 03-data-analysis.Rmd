@@ -1,9 +1,13 @@
 ---
 layout: page
-title: Lesson Title
-subtitle: Topic Title One
-minutes: 10
+title: Using dplyr for data manipulation and analysis
+subtitle: dplyr for data analysis
+minutes: 60
 ---
+
+```{r knitr-options, echo=FALSE, purl=FALSE}
+knitr::opts_chunk$set(results='hide', fig.path='img/')
+```
 
 > ## Learning Objectives {.objectives}
 >
@@ -21,6 +25,121 @@ if (!file.exists("data/species.csv")) {
 }
 ```
 
-```{r}
+```{r load-data, echo=FALSE}
 surveys <- read.csv(file="data/surveys.csv")
+species <- read.csv(file="data/species.csv")
 ```
+
+## Calculating statistics
+
+```{r, echo=FALSE, purl=FALSE}
+## Calculating statistics
+```
+
+Let's get a closer look at our data. For instance, we might want to know how
+many animals we trapped in each plot, or how many of each species were caught.
+
+To get all the species caught during this study, we are going to use the
+`distinct()` function on the `species_id` column or the `surveys` data frame:
+
+```{r distinct-species, purl=FALSE}
+library(dplyr)
+distinct_species <- surveys %>%
+                    select(species_id) %>% distinct()
+```
+
+### Challenge
+
+1. How many species were caught?
+1. Why is the species listed on line 14 blank?
+
+`dplyr` comes with the function `group_by` that allows you to calculate
+statistics based on the levels of a factor. For instance, we can calculate the
+number of individuals caught for each species by combining the functions
+`summarize()` (or `summarise()`) and `n()` on the "grouped by" dataset:
+
+```{r count-species, purl=FALSE}
+species_count <- surveys %>% group_by(species_id) %>%
+                 summarize(count=n())
+```
+
+Here `count` is the column name and the function `n()` gets applied to each
+unique value found in the `species_id` column.
+
+This function returns an object of class `tbl`, and by default it only shows the
+first 10 lines. If you want to see more of the data, you can use the function
+`print` and use the `n` argument to specify the number of lines you'd like to
+see. For instance, as there are 49 unique values in our dataset, we can use:
+
+```{r summary-species}
+print(species_count, n=50)
+```
+
+R has a lot of built in statistical functions, like `mean()`, `median()`,
+`max()`, `min()`. Let's start by calculating the average weight of all the
+animals using the function `mean()` in combination with `group_by()`:
+
+```{r species-mean-weight-1}
+surveys %>% group_by(species_id) %>%
+            summarize(count=n(),
+                      mean_weight=mean(weight))
+```
+
+Hmm, we just get `NA`. That's because we don't have the weight for every animal
+and missing data is recorded as `NA`. By default, all R functions operating on
+data that contain missing value will return `NA`. It's a way to make sure that
+users know they have missing values, and make a conscious decision on how to deal
+with them.
+
+When dealing with simple statistics like the mean, the easiest way to ignore
+`NA` (the missing data) is to use `na.rm=TRUE` (`rm` stands for remove):
+
+```{r species-mean-weight-1}
+surveys %>% group_by(species_id) %>%
+            summarize(count=n(),
+                      mean_weight=mean(weight, na.rm=TRUE))
+```
+
+Slightly better but still not great. For 9 out of the first 10 species listed,
+we get `NaN` ('Not a Number'). Let's try to understand why this happens by
+comparing the number of observations to the number of `NA` for each species:
+
+```{r count-NAs, purl=FALSE}
+surveys %>% group_by(species_id) %>%
+            summarize(count = n(),
+                      n_na = sum(is.na(weight)),
+                      mean_weight = mean(weight, na.rm=TRUE))
+```
+
+Here we can see that we were trying to calculate the mean for species that
+completely lacked weight measurements. We were therefore trying to divide
+missing data by 0 leading to the `NaN`. One way to deal with this issue is to
+first remove all missing data for weight using `filter()`, and because there
+will be no missing data left, we can remove the `na.rm=TRUE` inside the `mean()`
+function:
+
+```{r remove-NAs, purl=FALSE}
+surveys %>% group_by(species_id) %>% filter(!is.na(weight)) %>%
+    summarize(count=n(),
+              n_na = sum(is.na(weight)),
+              mean_weight = mean(weight)
+              )
+```
+
+Let's remove the `n_na` column now that we figured out the problem with the
+ mean, let's add the standard deviation for weight, and let's save the results
+ in a variable called `species_stats`:
+
+
+```{r mean-weight, purl=FALSE}
+species_stats <- surveys %>% group_by(species_id) %>% filter(!is.na(weight)) %>%
+    summarize(count=n(),
+              mean_weight = mean(weight),
+              mean_sd = sd(weight)
+              )
+```
+
+### Challenge
+
+1. Modify the `species_stats` object so that it also includes the mean and
+   standard deviation for hindfoot_length
