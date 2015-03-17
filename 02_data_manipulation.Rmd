@@ -93,7 +93,7 @@ surveys_DM <- filter(surveys, species_id == "DM", year >= "2001")
 > ## Callout Box: Boolean operations and Filtering
 >
 > When you filter on a criterium, you compare each row of data.frame. 
-> Using boolean operators, such as `AND` (`&`) and `OR` (`|`), you can combine different criteria.
+> Using boolean operators, such as AND (`&`) and OR (`|`), you can combine different criteria.
 > Let's see how this works with some examples using a vector: 
 > 
 > * First create a vector with some numbers:
@@ -109,24 +109,39 @@ surveys_DM <- filter(surveys, species_id == "DM", year >= "2001")
     u < 3
 ```
 
+> * To know how many elements pass the criterium, you can use `sum()`
+
+```{r boolean2b}
+    sum(u < 3)
+```
+
 > * If you want to select only the elements of the vector that are conform the selection criterium, you can use the following:
 
 ```{r boolean3}
     u[u < 3]
 ```
 
-> * Selection criteria can be combined using  `AND` (`&`) and `OR` (`|`):
+> * To select elements that do not conform to the criterium, the NOT operator `!` can be used:
 
-    
+```{r boolean5}
+    u[! u > 5]
+```
+
+> * Selection criteria can be combined using AND (`&`) and OR (`|`):
+ 
 ```{r boolean4}
     # elements below 3 OR larger or equal to 4:
     u[u < 3 | u >= 4]
     # elements larger than 5 AND smaller than 1. 
-    u[u > 5 & u < 1 ]
     # As this is mathematically impossible, nothing matches this condition!
+    u[u > 5 & u < 1 ]
 
-    u[u > 5 & u < 8]
+    u[u > 5 & ! u < 1 ]
+    u[u > 5 & u < 7]
 ```
+
+
+
 
 > ## Challenge: filtering rows on multiple factors
 > 
