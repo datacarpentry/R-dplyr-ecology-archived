@@ -2,7 +2,7 @@
 layout: page
 title: Introduction to dplyr
 subtitle: clean and efficient data maninulation
-minutes: 60
+minutes: 20
 ---
   
 ```{r knitr-options, echo=FALSE, purl=FALSE}
@@ -11,9 +11,9 @@ knitr::opts_chunk$set(results='hide', fig.path='img/')
 
 > ## Learning Objectives
 >
-> * Familiarize participants with dplyr package
 > * Introduce tbl_df data structure
 > * Introduce the simplified syntax of dplyr
+> * Introduce the concept of grouping in dplyr
 > * Understand the concept of piping
 
 ## dplyr
