@@ -1,0 +1,204 @@
+---
+layout: page
+title: R dplyr ecology
+subtitle: Data manipulation
+minutes: 45
+---
+
+> ## Learning Objectives {.objectives}
+>
+> * being able to select a column from a data frame
+> * being able to filter rows on specific criteria
+> * being able to order rows on specific criteria
+> * being able to add a column as a function of existing columns
+
+## Load data
+
+```{r check-data, echo=FALSE}
+if (!file.exists("data/surveys.csv")) {
+    download.file("http://files.figshare.com/1919744/surveys.csv",
+                  "data/surveys.csv")
+}
+if (!file.exists("data/species.csv")) {
+    download.file("http://files.figshare.com/1919741/species.csv",
+                  "data/species.csv")
+}
+```
+
+```{r dplyr.init}
+# if dplyr is not yet installed, uncomment the next line
+# install.packages("dplyr")
+library(dplyr)
+```
+
+Read in the data in comma separated file into a data frame.
+```{r readSurveys}
+surveys <- read.csv(file="data/surveys.csv")
+```
+
+## Selecting columns of data
+
+In particular for larger datasets, it can be tricky to remember the column
+number that corresponds to a particular variable. (is hindfoot length in column 7
+or 9? oh, right... they are in column 8). In some cases, in which column the
+variable will be can change if the script you are using adds or removes
+columns. It's therefore often better to use column names to refer to a
+particular variable, and it makes your code easier to read and your intentions
+clearer.
+
+In the introduction to R, we have covered a first way of selecting columns, using the `$` sign.
+If you want to look at the result, you can use head().
+
+```{r dollar}
+hindfoot_length_column <- surveys$hindfoot_length
+# look at the data in the variable hindfoot_length_column
+head(hindfoot_length_column)
+```
+
+Using dplyr, you can do operations on a particular column, by selecting it using the `select()` function. 
+The first argument is the data frame, the second argument the column name you want to select.
+You can use `names(surveys)` or `colnames(surveys)` to remind yourself of the column names.
+
+```{r select}
+hindfoot_length_column <- select(surveys, hindfoot_length)
+```
+
+You can easily select multiple columns by adding the names as additional arguments.
+
+```{r select_mult}
+hindfoot_length_species_columns <- select(surveys, hindfoot_length, species_id)
+```
+
+## Filtering rows of data
+
+When analyzing data, though, we often want to look at partial statistics, such
+as the maximum value of a variable per species or the average value per plot.
+
+One way to do this is to filter the data we want, and create a new temporary
+data frame, using the `filter()` function. For instance, if we just want to look at
+the animals of the species "DO":
+
+```{r filter}
+surveys_DO <- filter(surveys, species_id == "DO")
+```
+
+Filtering on multiple criteria (column names) can be done by adding extra filters:
+
+```{r filter_mult}
+surveys_DM <- filter(surveys, species_id == "DM", year >= "2001")
+```
+
+
+
+> ## Callout Box: Boolean operations and Filtering
+>
+> When you filter on a criterium, you compare each row of data.frame. 
+> Using boolean operators, such as `AND` (`&`) and `OR` (`|`), you can combine different criteria.
+> Let's see how this works with some examples using a vector: 
+> 
+> * First create a vector with some numbers:
+    
+```{r boolean1}
+    u <- c(1, 4, 2, 5, 6, 3, 7)
+```
+
+> * Check which numbers ar smaller than e.g. three. This results in a vector of the same size
+>   with for each number a boolean value of `TRUE` or `FALSE`, depending if the respective number passed the criterium.
+
+```{r boolean2}
+    u < 3
+```
+
+> * If you want to select only the elements of the vector that are conform the selection criterium, you can use the following:
+
+```{r boolean3}
+    u[u < 3]
+```
+
+> * Selection criteria can be combined using  `AND` (`&`) and `OR` (`|`):
+
+    
+```{r boolean4}
+    # elements below 3 OR larger or equal to 4:
+    u[u < 3 | u >= 4]
+    # elements larger than 5 AND smaller than 1. 
+    u[u > 5 & u < 1 ]
+    # As this is mathematically impossible, nothing matches this condition!
+
+    u[u > 5 & u < 8]
+```
+
+> ## Challenge: filtering rows on multiple factors
+> 
+> 1. Boolean operators can also be used in dplyr! Filter rows on two different species (e.g. both DO and DM).
+>
+> Have a look at the [Introduction to dplyr](http://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html#filter-rows-with-filter) if you need a hint.
+
+```{r filter_or, echo=FALSE, eval=FALSE}
+    #If you want to include e.g. multiple species, you can use a boolean operator OR ("|"):
+    surveys_DO_DM <- filter(surveys, species_id == "DO" | species_id == "DM", year == "1977")
+```
+
+## Ordering rows according to a column
+
+In stead of filtering rows, you sometimes just want to reorder the data. 
+This can be done using `arrange()`. It takes a data frame as first argument and a list of
+column names. 
+
+```{r arrange}
+surveys_order <- arrange(surveys, year, month, day)
+# have a look
+head(surveys_order)
+```
+
+Default rows are ordered ascendingly, you can reverse this using `desc()`:
+
+```{r arrange_desc}
+surveys_desc <- arrange(surveys, desc(weight))
+# have a look at the data
+head(surveys_desc)
+```
+
+> ## Challenge ordering of rows
+> 
+> 1. Arrange the surveys so you see the most recent month first, ascendingly according to the day
+> 
+
+```{r arrange_challenge, echo=FALSE, eval=FALSE}
+surveys_challenge <- arrange(surveys, desc(year), desc(month), day)
+# have a look at the data
+head(surveys_challenge)
+```
+
+## Adding a column to our dataset
+
+Sometimes, you may have to add a new column to your dataset that represents a
+new variable, based on existing columns. You can do this using the function `mutate()`. 
+
+Here we will add a column, converting the hindfoot_length from mm to cm:
+
+```{r mutate}
+surveys_plus <- mutate(surveys, hindfoot_length_cm = hindfoot_length / 10)
+head(surveys_plus)
+
+```
+
+> ## Challenge adding column
+> 
+> 1. Add a column calculating the ratio of hindfoot_lenght and weight. 
+
+```{r, echo=FALSE, eval=FALSE}
+surveys_plus <- mutate(surveys, ratio = hindfoot_length / weight)
+```
+
+> 2. Because the weight and hindfoot_length is not known for all data, you can first filter the data to see some more meaningful results.
+Select for rows where the weight is above 100 g and the hindfoot_length is longer than 10 mm.
+
+```{r, echo=FALSE, eval=FALSE}
+head(filter(surveys_plus, weight > 100, hindfoot_length > 10))
+```
+
+
+
+
+
