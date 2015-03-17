@@ -49,9 +49,9 @@ frame `tbl`). The main advantage to using a `tbl` over a regular data frame
 is the printing: `tbl` objects only print a few rows and all the columns that 
 fit on one screen, describing the rest of it as text. Many functions in dplyr 
 return `tbl` objects. For all practical purposes, `tbl` acts exactly like
-a regular data frame, e.g. you can use the familiar `$` or `[` indexing 
-notation. You can use `tbl_df()` to convert a regular data frame to `tbl` object 
-and `as.data.frame()` to convert it back again.
+a regular data frame (it *is* a data frame) e.g. you can use the familiar `$` 
+or `[` indexing notation. You can use `tbl_df()` to convert a regular data frame
+to `tbl` object and `as.data.frame()` to convert it back again.
 
 Let's load the familiar mammals survey data:
 
@@ -279,7 +279,7 @@ summarise(surveys,
 You can use `sample_n()` and `sample_frac()` to take a random sample of rows,
 either a fixed number for `sample_n()` or a fixed fraction for `sample_frac()`.
 
-```{r, echo=FALSE, purl=TRUE}
+```{r, results='show', purl=TRUE}
 sample_n(surveys, 10)
 sample_frac(surveys, 0.01)
 ```
@@ -287,4 +287,23 @@ sample_frac(surveys, 0.01)
 Use `replace = TRUE` to perform a bootstrap sample, and optionally weight the 
 sample with the `weight` argument.
 
+## Commonalities
+
+You may have noticed that all these functions are very similar:
+
+* The first argument is a data frame.
+* The subsequent arguments describe what to do with it, and you can refer
+  to columns in the data frame directly without using `$`.
+* The result is a new data frame
+
+Together these properties make it easy to chain together multiple simple steps 
+to achieve a complex result.
+
+These five functions provide the basis of a language of data manipulation. At 
+the most basic level, you can only alter a tidy data frame in five useful ways: 
+you can reorder the rows (`arrange()`), pick observations and variables of 
+interest (`filter()` and `select()`), add new variables that are functions of 
+existing variables (`mutate()`) or collapse many values to a summary 
+(`summarise()`). The remainder of the language comes from applying the five 
+functions to different types of data, like to grouped data, as described next.
 
