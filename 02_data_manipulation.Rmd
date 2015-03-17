@@ -1,14 +1,14 @@
 ---
 layout: page
-title: Lesson Title
-subtitle: Topic Title One
-minutes: 10
+title: R dplyr ecology
+subtitle: Data manipulation
+minutes: 45
 ---
 > ## Learning Objectives {.objectives}
 >
 > * being able to select a column from a data frame
 > * being able to filter rows on a specific criterium
-> * being able to add/remove columns and rows
+> * being able to add a column as a function of existing columns
 
 # Data manipulation
 
@@ -91,6 +91,40 @@ surveys_DO_DM <- filter(surveys, species_id == "DO" | species_id == "DM", year =
 ```
 -->
 
+## Ordering rows according to a column
+
+In stead of filtering rows, you sometimes just want to reorder the data. 
+This can be done using `arrange()`. It takes a data frame as first argument and a list of
+column names. 
+
+```{r arrange}
+surveys_order <- arrange(surveys, year, month, day)
+# have a look
+head(surveys_order)
+```
+
+Default rows are ordered ascendingly, you can reverse this using `desc()`:
+
+```{r arrange_desc}
+surveys_desc <- arrange(surveys, desc(weight))
+# have a look at the data
+head(surveys_desc)
+```
+
+> ## Challenge Title {.challenge}
+> 
+> 1. Arrange the surveys so you see the most recent month first, ascendingly according to the day
+> 
+<!---
+
+```{r arrange_challenge}
+surveys_challenge <- arrange(surveys, desc(year), desc(month), day)
+# have a look at the data
+head(surveys_challenge)
+```
+-->
+
+
 ## Adding a column to our dataset
 
 Sometimes, you may have to add a new column to your dataset that represents a
@@ -113,6 +147,9 @@ head(surveys_plus)
 > surveys_plus <- mutate(surveys, ratio = hindfoot_length / weight)
 > ```
 -->
+
+
+
 >
 > 1. Because the weight and hindfoot_length is not known for all data, you can filter the data to see some results:
 <!---
