@@ -122,4 +122,86 @@ colnames(surveys) <- gsub("hindfoot_length", "hf_len", colnames(surveys))
 The following lesson topics will dive deeper into the different functionality
 available in `dplyr`.
 
+## Grouping
+
+```{r section-header-3, echo=FALSE, purl=TRUE}
+### Grouping
+```
+
+Another powerful feature of `dplyr` is the capability to combine functions
+with the idea of "group by", repeating the operation individually on groups of 
+observations within the dataset. In `dplyr`, you use the `group_by()` function 
+to describe how to break a dataset down into groups of rows.
+
+Let's calculate mean weight and hindfoot length for each species:
+
+```{r group-by-example, results='show', purl=FALSE}
+by_species <- group_by(surveys, species_id)
+species_stats <- summarise(by_species,
+  count = n(),
+  weight = mean(weight, na.rm = TRUE),
+  hindfoot_length = mean(hindfoot_length, na.rm = TRUE))
+species_stats
+```
+
+Many species do not have recorded measures for `weight` and `hindfoot_length` at 
+all (indicated by `NaN`s). Let's filter out these species
+
+```{r, results='show', purl=TRUE}
+filter(species_stats, !is.nan(weight) & !is.nan(hindfoot_length))
+```
+
+
+## Chaining (piping)
+
+```{r section-header-4, echo=FALSE, purl=TRUE}
+### Chaining (piping)
+```
+
+Most of the time your data manipulation will constiture of a sequence of 
+operations applied on your data. You either have to do it step-by-step:
+
+```{r save-to-vars, eval = FALSE, purl=FALSE}
+a1 <- group_by(surveys, year, month, day)
+a2 <- select(a1, record_id, weight, hindfoot_length)
+a3 <- summarise(a2,
+  mean_weight = mean(weight, na.rm = TRUE),
+  mean_hf_length = mean(hindfoot_length, na.rm = TRUE))
+a4 <- filter(a3, mean_weight > 30 | mean_hf_length > 30)
+```
+
+Or if you don't want to save the intermediate results, you need to wrap the 
+function calls inside each other:
+
+```{r nested-verbs, eval = FALSE, purl=FALSE}
+filter(
+  summarise(
+    select(
+      group_by(surveys, year, month, day),
+      weight, hindfoot_length
+    ),
+    mean_weight = mean(weight, na.rm = TRUE),
+    mean_hf_length = mean(hindfoot_length, na.rm = TRUE)
+  ),
+  mean_weight > 30 | mean_hf_length > 30
+)
+```
+
+This is difficult to read because the order of the operations is from inside to 
+out, and the arguments are a long way away from the function. To get around this 
+problem, `dplyr` provides the `%>%` operator. `x %>% f(y)` turns into `f(x, y)` 
+so you can use it to rewrite multiple operations so you can read from 
+left-to-right, top-to-bottom:
+
+```{r, piping, results='show', purl=FALSE}
+surveys %>%
+  group_by(year, month, day) %>%
+  select(weight, hindfoot_length) %>%
+  summarise(
+    mean_weight = mean(weight, na.rm = TRUE),
+    mean_hf_length = mean(hindfoot_length, na.rm = TRUE)
+  ) %>%
+  filter(mean_weight > 30 | mean_hf_length > 30)
+```
+
 
