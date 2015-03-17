@@ -1,0 +1,383 @@
+---
+layout: topic
+title: Introduction to dplyr
+minutes: 45
+---
+
+```{r, echo=FALSE, purl=FALSE}
+knitr::opts_chunk$set(results='hide', fig.path='img/r-lesson-')
+```
+
+This document is a standalone introduction to dplyr ported directly from the 
+original package [vignette](https://github.com/hadley/dplyr/blob/master/vignettes/introduction.Rmd).
+
+## dplyr
+
+[`dplyr`](https://github.com/hadley/dplyr) package offers simple, clear and 
+efficient way of working with your data.
+
+When working with data you must:
+
+* Figure out what you want to do.
+* Precisely describe what you want in the form of a computer program.
+* Execute the code.
+
+The `dplyr` package makes each of these steps as fast and easy as possible by:
+
+* Elucidating the most common data manipulation operations, so that your
+  options are helpfully constrained when thinking about how to tackle a
+  problem.
+* Providing simple functions that correspond to the most common
+  data manipulation verbs, so that you can easily translate your thoughts
+  into code.
+* Using efficient data storage backends, so that you spend as little time
+  waiting for the computer as possible.
+
+## From data frames to tbl_df 
+
+```{r, echo=FALSE, purl=TRUE}
+### From data frames to tbl_df
+```
+
+dplyr introduces an extension to the regular data frame called `tbl` (a data
+frame `tbl`). The main advantage to using a `tbl` over a regular data frame 
+is the printing: `tbl` objects only print a few rows and all the columns that 
+fit on one screen, describing the rest of it as text. Many functions in dplyr 
+return `tbl` objects. For all practical purposes, `tbl` acts exactly like
+a regular data frame (it *is* a data frame) e.g. you can use the familiar `$` 
+or `[` indexing notation. You can use `tbl_df()` to convert a regular data frame
+to `tbl` object and `as.data.frame()` to convert it back again.
+
+Let's load the familiar mammals survey data:
+
+```{r, purl=FALSE}
+surveys <- read.csv('data/surveys.csv')
+head(surveys)
+```
+
+Next, let's convert the data frame into a `tbl` object.
+
+```{r, results='show', message=FALSE, purl=FALSE}
+# Start by loading dplyr
+library(dplyr)
+
+surveys <- tbl_df(surveys)
+# We don't need to use head() anymore, just printing surveys works
+surveys
+```
+
+Note how the first row of print out (`Source: local data frame [35,549 x 9]`)
+shows you also the dimensions of your table obect: 35,549 rows x 9 columns.
+
+## Working with dplyr and the mammals data
+
+```{r, echo=FALSE, purl=TRUE}
+### Working with dplyr and the mammals data
+```
+
+Let's start exploring the capabilities of `dplyr` by looking at the basic single
+table data manipulation verbs:
+
+* `filter()` (and `slice()`)
+* `arrange()`
+* `select()` (and `rename()`)
+* `distinct()`
+* `mutate()` (and `transmute()`)
+* `summarise()`
+* `sample_n()` and `sample_frac()`
+
+Let's look at each of these using the mammals data.
+
+## Filter rows with `filter()`
+
+```{r, echo=FALSE, purl=TRUE}
+### Filter rows with `filter()`
+```
+
+`filter()` allows you to select a subset of the rows of a data frame. The first 
+argument is the name of the data frame, and the second and subsequent are 
+filtering expressions evaluated in the context of that data frame:
+
+For example, using the `surveys` data we can select all observations for females 
+of the North American Deermouse ([*Peromyscus maniculatus*](https://en.wikipedia.org/wiki/Peromyscus_maniculatus), see 
+`"data/species.csv"` for the species information) made in January with:
+
+```{r, results='show', purl=FALSE}
+filter(surveys, month == 1, species_id == "PM" & sex == "F")
+```
+
+This is equivalent to the more conventional and verbose:
+
+```{r, eval = FALSE, purl=FALSE}
+surveys[surveys$month == 1 & surveys$species_id == "PM" & surveys$sex == "F", ]
+```
+
+`filter()` works similarly to `subset()` except that you can give it any number 
+of filtering conditions which are joined together with `&` (not `&&` which is 
+easy to do accidentally!).  You can use other boolean operators explicitly:
+
+```{r, eval = FALSE, purl=FALSE}
+filter(surveys, month == 1 | month == 2)
+```
+
+To select rows by position, use `slice()`:
+
+```{r, results='show', purl=FALSE}
+slice(surveys, 1:10)
+```
+
+## Arrange rows with `arrange()`
+
+```{r, echo=FALSE, purl=TRUE}
+### Arrange rows with `arrange()`
+```
+
+`arrange()` works similarly to `filter()` except that instead of filtering or 
+selecting rows, it reorders them. It takes a data frame, and a set of column 
+names (or more complicated expressions) to order by. If you provide more than 
+one column name, each additional column will be used to break ties in the values 
+of preceding columns:
+
+```{r, results='show', purl=FALSE}
+arrange(surveys, year, month, day)
+```
+
+Use `desc()` to order a column in descending order:
+
+```{r, results='show', purl=FALSE}
+arrange(surveys, desc(hindfoot_length))
+```
+
+`arrange()` is a straighforward wrapper around `order()` that requires less 
+typing. The previous code is equivalent to:
+
+```{r, eval = FALSE, purl=FALSE}
+surveys[order(surveys$year, surveys$month, surveys$day), ]
+surveys[order(desc(surveys$hindfoot_length)), ]
+```
+
+## Select columns with `select()`
+
+```{r, echo=FALSE, purl=TRUE}
+### Select columns with `select()`
+```
+
+Often you work with large datasets with many columns where only a few are 
+actually of interest to you. `select()` allows you to rapidly zoom in on a 
+useful subset using operations that usually only work on numeric variable 
+positions:
+
+```{r, results='show', purl=FALSE}
+# Select columns by name
+select(surveys, month, day, year)
+# Select all columns between year and day (inclusive)
+select(surveys, month:year)
+# Select all columns except those from year to day (inclusive)
+select(surveys, -(month:year))
+```
+
+This function works similarly to the `select` argument to the `base::subset()`. 
+It's its own function in dplyr, because the dplyr philosophy is to have small 
+functions that each do one thing well.
+
+There are a number of helper functions you can use within `select()`, like 
+`starts_with()`, `ends_with()`, `matches()` and `contains()`. These let you 
+quickly match larger blocks of variable that meet some criterion. See `?select` 
+for more details.
+
+You can rename variables with `select()` by using named arguments:
+
+```{r, results='show', purl=FALSE}
+select(surveys, hf_len = hindfoot_length)
+```
+
+But because `select()` drops all the variables not explicitly mentioned, it's 
+not that useful. Instead, use `rename()`:
+
+```{r, eval=FALSE, results='show', purl=FALSE}
+# Not evaluated
+rename(surveys, hf_len = hindfoot_length)
+```
+
+## Extract distinct (unique) rows
+
+```{r, echo=FALSE, purl=TRUE}
+### Extract distinct (unique) rows
+```
+
+A common use of `select()` is to find out which values a set of variables takes. 
+This is particularly useful in conjunction with the `distinct()` verb which only 
+returns the unique values in a table.
+
+```{r, results='show', purl=FALSE}
+# Unique species
+distinct(select(surveys, species_id))
+# Which species are present in which plots
+distinct(select(surveys, plot_id, species_id))
+```
+
+(This is very similar to `base::unique()` but should be much faster.)
+
+## Add new columns with `mutate()`
+
+```{r, echo=FALSE, purl=TRUE}
+### Add new columns with `mutate()`
+```
+
+As well as selecting from the set of existing columns, it's often useful to add 
+new columns that are functions of existing columns.  This is the job of 
+`mutate()`:
+
+```{r, results='show', purl=FALSE}
+# Create new columns hindfoot_length_cm (hindfoot length in cm) and julian_time
+# (day count from the first observation day 1977-07-16)
+surveys_extended <- mutate(surveys,
+              hindfoot_length_cm = hindfoot_length / 10,
+              julian_time = julian(as.Date(paste0(year, "-", month, "-", day)),
+                                   origin = as.Date("1977-07-16")))
+# Show only selected columns
+select(surveys_extended, record_id, year, month, day, species_id, 
+       hindfoot_length_cm, julian_time)
+```
+
+If you only want to keep the new variables, use `transmute()`:
+
+```{r, results='show', purl=FALSE}
+surveys_extended <- transmute(surveys,
+              hindfoot_length_cm = hindfoot_length / 10,
+              julian_time = julian(as.Date(paste0(year, "-", month, "-", day)),
+                                   origin = as.Date("1977-07-16")))
+# Show the latest records
+tail(surveys_extended, n=10)
+```
+
+## Summarise values with `summarise()`
+
+```{r, echo=FALSE, purl=TRUE}
+### Summarise values with `summarise()`
+```
+
+The last verb is `summarise()`, which collapses a data frame to a single row. 
+It's not very useful yet:
+
+```{r, results='show', purl=FALSE}
+summarise(surveys,
+  mean_weight = mean(weight, na.rm = TRUE))
+```
+
+`summarise()` is powerful when used in combination with `group_by()`, more of
+this below.
+
+## Randomly sample rows with `sample_n()` and `sample_frac()`
+
+```{r, echo=FALSE, purl=TRUE}
+### Randomly sample rows with `sample_n()` and `sample_frac()`
+```
+
+You can use `sample_n()` and `sample_frac()` to take a random sample of rows,
+either a fixed number for `sample_n()` or a fixed fraction for `sample_frac()`.
+
+```{r, results='show', purl=TRUE}
+sample_n(surveys, 10)
+sample_frac(surveys, 0.01)
+```
+
+Use `replace = TRUE` to perform a bootstrap sample, and optionally weight the 
+sample with the `weight` argument.
+
+## Commonalities
+
+You may have noticed that all these functions are very similar:
+
+* The first argument is a data frame.
+* The subsequent arguments describe what to do with it, and you can refer
+  to columns in the data frame directly without using `$`.
+* The result is a new data frame
+
+Together these properties make it easy to chain together multiple simple steps 
+to achieve a complex result.
+
+These five functions provide the basis of a language of data manipulation. At 
+the most basic level, you can only alter a tidy data frame in five useful ways: 
+you can reorder the rows (`arrange()`), pick observations and variables of 
+interest (`filter()` and `select()`), add new variables that are functions of 
+existing variables (`mutate()`) or collapse many values to a summary 
+(`summarise()`). The remainder of the language comes from applying the five 
+functions to different types of data, like to grouped data, as described next.
+
+# Grouped operations
+
+These verbs are useful, but they become really powerful when you combine them 
+with the idea of "group by", repeating the operation individually on groups of 
+observations within the dataset. In `dplyr`, you use the `group_by()` function 
+to describe how to break a dataset down into groups of rows. You can then use 
+the resulting object in exactly the same functions as above; they'll 
+automatically work "by group" when the input is a grouped.
+
+The verbs are affected by grouping as follows:
+
+* grouped `select()` is the same as ungrouped `select()`, excepted that retains 
+  grouping variables are always retained. 
+* grouped `arrange()` orders first by grouping variables
+* `mutate()` and `filter()` are most useful in conjunction with window 
+  functions (like `rank()`, or `min(x) == x`)
+* `sample_n()` and `sample_frac()` sample the specified number/fraction of
+  rows in each group.
+* `slice()` extracts rows within each group.
+* `summarise()` is easy to understand and very useful, and is described in 
+  more detail below.
+
+Calculating grouped means is straightforward, let's calculate mean weight and
+hindfoot length for each species:
+
+```{r, results='show', purl=TRUE}
+by_species <- group_by(surveys, species_id)
+species_stats <- summarise(by_species,
+  count = n(),
+  weight = mean(weight, na.rm = TRUE),
+  hindfoot_length = mean(hindfoot_length, na.rm = TRUE))
+species_stats
+```
+
+Many species do not have recorded measures for `weight` and `hindfoot_length` at 
+all (indicated by `NaN`s). Let's filter out these species
+
+```{r, results='show', purl=TRUE}
+filter(species_stats, !is.nan(weight) & !is.nan(hindfoot_length))
+```
+
+You use `summarise()` with __aggregate functions__, which take a vector of 
+values, and return a single number. There are many useful functions in base R 
+like `min()`, `max()`, `mean()`, `sum()`, `sd()`, `median()`, and `IQR()`. dplyr 
+provides a handful of others:
+
+* `n()`: number of observations in the current group
+* `n_distinct(x)`: count the number of unique values in `x`.
+* `first(x)`, `last(x)` and `nth(x, n)` - these work
+  similarly to `x[1]`, `x[length(x)]`, and `x[n]` but give you more control
+  of the result if the value isn't present.
+
+For example, we could use these to find the number of species and the number of 
+individuals surveyed in each month over the whole surveying period (1977-2002):
+
+```{r, results='show', purl=TRUE}
+by_month <- group_by(surveys, month)
+summarise(by_month,
+  n_species = n_distinct(species_id),
+  n_individuals = n()
+)
+```
+
+When you group by multiple variables, each summary peels off one level of the 
+grouping. That makes it easy to progressively roll-up a dataset:
+
+```{r, results='show', purl=TRUE}
+daily <- group_by(surveys, year, month, day)
+(per_day   <- summarise(daily, records = n()))
+(per_month <- summarise(per_day, records = sum(records)))
+(per_year  <- summarise(per_month, records = sum(records)))
+```
+
+However you need to be careful when progressively rolling up summaries like 
+this: it's ok for sums and counts, but you need to think about weighting for 
+means and variances, and it's not possible to do exactly for medians.
