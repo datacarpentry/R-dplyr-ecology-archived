@@ -1,0 +1,207 @@
+---
+layout: page
+title: Introduction to dplyr
+subtitle: clean and efficient data maninulation
+minutes: 20
+---
+  
+```{r knitr-options, echo=FALSE, purl=FALSE}
+knitr::opts_chunk$set(results='hide', fig.path='img/')
+```
+
+> ## Learning Objectives
+>
+> * Introduce tbl_df data structure
+> * Introduce the simplified syntax of dplyr
+> * Introduce the concept of grouping in dplyr
+> * Understand the concept of piping
+
+## dplyr
+
+[`dplyr`](https://github.com/hadley/dplyr) package offers simple, clear and 
+efficient way of working with your data. The package makes the most common data
+manipulation steps as fast and easy as possible by:
+
+* Elucidating the most common data manipulation operations, so that your
+  options are helpfully constrained when thinking about how to tackle a
+  problem.
+* Providing simple functions that correspond to the most common
+  data manipulation verbs, so that you can easily translate your thoughts
+  into code.
+* Using efficient data storage backends, so that you spend as little time
+  waiting for the computer as possible.
+
+## From data frames to tbl_df 
+
+```{r section-title-1, echo=FALSE, purl=TRUE}
+### From data frames to tbl_df
+```
+
+dplyr introduces an extension to the regular data frame called `tbl` (a data
+frame `tbl`). The main advantage to using a `tbl` over a regular data frame 
+is the printing: `tbl` objects only print a few rows and all the columns that 
+fit on one screen, describing the rest of it as text. For all practical 
+purposes, `tbl` acts exactly like a regular data frame, i.e. syou can use the 
+familiar `$` or `[` indexing notation.
+
+Let's load the mammals survey data:
+
+```{r load-data, purl=FALSE}
+surveys <- read.csv('data/surveys.csv')
+head(surveys)
+```
+
+Next, let's convert the data frame into a `tbl` object.
+
+```{r, results='show', message=FALSE, purl=FALSE}
+# If dplyr is not yet installed, uncomment the next line
+# install.packages("dplyr")
+library(dplyr)
+
+surveys <- tbl_df(surveys)
+# We don't need to use head() anymore, just printing surveys works
+surveys
+```
+
+Note how the first row of print out (`Source: local data frame [35,549 x 9]`)
+shows you also the dimensions of your table obect: 35,549 rows x 9 columns.
+
+## dplyr syntax
+
+```{r section-header-2, echo=FALSE, purl=TRUE}
+### dplyr syntax
+```
+
+`dplyr` simplifies the syntax of many of the data manipulation operations that
+you have been doing in R. For example, using the `surveys` data we can select 
+all observations for females of the North American Deermouse 
+([*Peromyscus maniculatus*](https://en.wikipedia.org/wiki/Peromyscus_maniculatus), 
+see `"data/species.csv"` for the species information) made in January with:
+
+```{r filter-example, results='show', purl=FALSE}
+filter(surveys, month == 1, species_id == "PM" & sex == "F")
+```
+
+This is equivalent to the more conventional and verbose:
+
+```{r old-style-filtering, results='show', purl=FALSE}
+surveys[surveys$month == 1 & surveys$species_id == "PM" & surveys$sex == "F", ]
+```
+
+Another example of the simplified syntax is given how you sort your data frame
+using `arrange()` function in `dplyr`:
+
+```{r arrange-example, results='show', purl=FALSE}
+arrange(surveys, year, month, day)
+```
+
+which is equivalent to:
+
+```{r old-style-sorting, eval = FALSE, purl=FALSE}
+surveys[order(surveys$year, surveys$month, surveys$day), ]
+```
+
+Selecting all columns except `year`, `month` and `day` is as simple as:
+
+```{r select-example, results='show', purl=FALSE}
+select(surveys, -year, -month, -day)
+```
+
+Renaming columns can be done usign `rename()`:
+
+```{r rename-example, results='show', purl=FALSE}
+rename(surveys, hf_len = hindfoot_length)
+```
+
+whereas renaming columns using base R has been somewhat painful:
+
+```{r old-style-renaming, eval = FALSE, purl=FALSE}
+colnames(surveys) <- gsub("hindfoot_length", "hf_len", colnames(surveys))
+```
+
+The following lesson topics will dive deeper into the different functionality
+available in `dplyr`.
+
+## Grouping
+
+```{r section-header-3, echo=FALSE, purl=TRUE}
+### Grouping
+```
+
+Another powerful feature of `dplyr` is the capability to combine functions
+with the idea of "group by", repeating the operation individually on groups of 
+observations within the dataset. In `dplyr`, you use the `group_by()` function 
+to describe how to break a dataset down into groups of rows.
+
+Let's calculate mean weight and hindfoot length for each species:
+
+```{r group-by-example, results='show', purl=FALSE}
+by_species <- group_by(surveys, species_id)
+species_stats <- summarise(by_species,
+  count = n(),
+  weight = mean(weight, na.rm = TRUE),
+  hindfoot_length = mean(hindfoot_length, na.rm = TRUE))
+species_stats
+```
+
+Many species do not have recorded measures for `weight` and `hindfoot_length` at 
+all (indicated by `NaN`s). Let's filter out these species
+
+```{r, results='show', purl=TRUE}
+filter(species_stats, !is.nan(weight) & !is.nan(hindfoot_length))
+```
+
+
+## Chaining (piping)
+
+```{r section-header-4, echo=FALSE, purl=TRUE}
+### Chaining (piping)
+```
+
+Most of the time your data manipulation will constiture of a sequence of 
+operations applied on your data. You either have to do it step-by-step:
+
+```{r save-to-vars, eval = FALSE, purl=FALSE}
+a1 <- group_by(surveys, year, month, day)
+a2 <- select(a1, record_id, weight, hindfoot_length)
+a3 <- summarise(a2,
+  mean_weight = mean(weight, na.rm = TRUE),
+  mean_hf_length = mean(hindfoot_length, na.rm = TRUE))
+a4 <- filter(a3, mean_weight > 30 | mean_hf_length > 30)
+```
+
+Or if you don't want to save the intermediate results, you need to wrap the 
+function calls inside each other:
+
+```{r nested-verbs, eval = FALSE, purl=FALSE}
+filter(
+  summarise(
+    select(
+      group_by(surveys, year, month, day),
+      weight, hindfoot_length
+    ),
+    mean_weight = mean(weight, na.rm = TRUE),
+    mean_hf_length = mean(hindfoot_length, na.rm = TRUE)
+  ),
+  mean_weight > 30 | mean_hf_length > 30
+)
+```
+
+This is difficult to read because the order of the operations is from inside to 
+out, and the arguments are a long way away from the function. To get around this 
+problem, `dplyr` provides the `%>%` operator. `x %>% f(y)` turns into `f(x, y)` 
+so you can use it to rewrite multiple operations so you can read from 
+left-to-right, top-to-bottom:
+
+```{r, piping, results='show', purl=FALSE}
+surveys %>%
+  group_by(year, month, day) %>%
+  select(weight, hindfoot_length) %>%
+  summarise(
+    mean_weight = mean(weight, na.rm = TRUE),
+    mean_hf_length = mean(hindfoot_length, na.rm = TRUE)
+  ) %>%
+  filter(mean_weight > 30 | mean_hf_length > 30)
+```
+
+
