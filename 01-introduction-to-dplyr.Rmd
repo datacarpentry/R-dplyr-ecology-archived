@@ -108,7 +108,7 @@ of the North American Deermouse ([*Peromyscus maniculatus*](https://en.wikipedia
 `"data/species.csv"` for the species information) made in January with:
 
 ```{r, results='show', purl=FALSE}
-filter(surveys, month == 1, species_id == "PM", sex == "F")
+filter(surveys, month == 1, species_id == "PM" & sex == "F")
 ```
 
 This is equivalent to the more conventional and verbose:
@@ -269,6 +269,9 @@ It's not very useful yet:
 summarise(surveys,
   mean_weight = mean(weight, na.rm = TRUE))
 ```
+
+`summarise()` is powerful when used in combination with `group_by()`, more of
+this below.
 
 ## Randomly sample rows with `sample_n()` and `sample_frac()`
 
