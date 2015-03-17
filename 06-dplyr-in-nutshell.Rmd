@@ -8,18 +8,13 @@ minutes: 45
 knitr::opts_chunk$set(results='hide', fig.path='img/r-lesson-')
 ```
 
-> ## Learning Objectives
->
-> * Familiarize participants with dplyr package
-> * Introduce tbl_df data structure
-> * Understand the data manipulation verbs used in dplyr
-> * Understand the concept of piping
+This document is a standalone introduction to dplyr ported directly from the 
+original package [vignette](https://github.com/hadley/dplyr/blob/master/vignettes/introduction.Rmd).
 
 ## dplyr
 
 [`dplyr`](https://github.com/hadley/dplyr) package offers simple, clear and 
-efficient way of working with your data. Repeating from the package
-[vignette](https://github.com/hadley/dplyr/blob/master/vignettes/introduction.Rmd):
+efficient way of working with your data.
 
 When working with data you must:
 
