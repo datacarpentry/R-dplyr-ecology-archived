@@ -109,7 +109,7 @@ filter(surveys, month == 1, species_id == "PM" & sex == "F")
 This is equivalent to the more conventional and verbose:
 
 ```{r, eval = FALSE, purl=FALSE}
-surveys[surveys$month == 1 & surveys$species_id == "PM", surveys$sex == "F", ]
+surveys[surveys$month == 1 & surveys$species_id == "PM" & surveys$sex == "F", ]
 ```
 
 `filter()` works similarly to `subset()` except that you can give it any number 
