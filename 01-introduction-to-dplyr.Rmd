@@ -160,3 +160,46 @@ typing. The previous code is equivalent to:
 surveys[order(surveys$year, surveys$month, surveys$day), ]
 surveys[order(desc(surveys$hindfoot_length)), ]
 ```
+
+## Select columns with `select()`
+
+```{r, echo=FALSE, purl=TRUE}
+### Select columns with `select()`
+```
+
+Often you work with large datasets with many columns where only a few are 
+actually of interest to you. `select()` allows you to rapidly zoom in on a 
+useful subset using operations that usually only work on numeric variable 
+positions:
+
+```{r, results='show', purl=FALSE}
+# Select columns by name
+select(surveys, month, day, year)
+# Select all columns between year and day (inclusive)
+select(surveys, month:year)
+# Select all columns except those from year to day (inclusive)
+select(surveys, -(month:year))
+```
+
+This function works similarly to the `select` argument to the `base::subset()`. 
+It's its own function in dplyr, because the dplyr philosophy is to have small 
+functions that each do one thing well.
+
+There are a number of helper functions you can use within `select()`, like 
+`starts_with()`, `ends_with()`, `matches()` and `contains()`. These let you 
+quickly match larger blocks of variable that meet some criterion. See `?select` 
+for more details.
+
+You can rename variables with `select()` by using named arguments:
+
+```{r, results='show', purl=FALSE}
+select(surveys, hf_len = hindfoot_length)
+```
+
+But because `select()` drops all the variables not explicitly mentioned, it's 
+not that useful. Instead, use `rename()`:
+
+```{r, eval=FALSE, results='show', purl=FALSE}
+# Not evaluated
+rename(surveys, hf_len = hindfoot_length)
+```
