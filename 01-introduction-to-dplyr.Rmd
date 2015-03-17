@@ -60,3 +60,44 @@ Let's look at each of these using the mammals data. First, let's load the data:
 surveys <- read.csv('data/surveys.csv')
 head(surveys)
 ```
+
+## Filter rows with `filter()`
+
+```{r, echo=FALSE, purl=TRUE}
+### Filter rows with `filter()`
+```
+
+`filter()` allows you to select a subset of the rows of a data frame. The first 
+argument is the name of the data frame, and the second and subsequent are 
+filtering expressions evaluated in the context of that data frame:
+
+For example, using the `surveys` data we can select all observations for females 
+of the North American Deermouse ([*Peromyscus maniculatus*](https://en.wikipedia.org/wiki/Peromyscus_maniculatus), see 
+`"data/species.csv"` for the species information) made in January with:
+
+```{r, message=FALSE, results='show', purl=FALSE}
+# Start by loading dplyr
+library(dplyr)
+filter(surveys, month == 1, species_id == "PM", sex == "F")
+```
+
+This is equivalent to the more conventional and verbose:
+
+```{r, eval = FALSE, purl=FALSE}
+surveys[surveys$month == 1 & surveys$species_id == "PM", surveys$sex == "F", ]
+```
+
+`filter()` works similarly to `subset()` except that you can give it any number 
+of filtering conditions which are joined together with `&` (not `&&` which is 
+easy to do accidentally!).  You can use other boolean operators explicitly:
+
+```{r, eval = FALSE, purl=FALSE}
+filter(surveys, month == 1 | month == 2)
+```
+
+To select rows by position, use `slice()`:
+
+```{r, results='show', purl=FALSE}
+slice(surveys, 1:10)
+```
+
