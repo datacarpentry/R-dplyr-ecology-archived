@@ -91,12 +91,7 @@ table data manipulation verbs:
 * `summarise()`
 * `sample_n()` and `sample_frac()`
 
-Let's look at each of these using the mammals data. First, let's load the data:
-
-```{r, purl=FALSE}
-surveys <- read.csv('data/surveys.csv')
-head(surveys)
-```
+Let's look at each of these using the mammals data.
 
 ## Filter rows with `filter()`
 
@@ -112,9 +107,7 @@ For example, using the `surveys` data we can select all observations for females
 of the North American Deermouse ([*Peromyscus maniculatus*](https://en.wikipedia.org/wiki/Peromyscus_maniculatus), see 
 `"data/species.csv"` for the species information) made in January with:
 
-```{r, message=FALSE, results='show', purl=FALSE}
-# Start by loading dplyr
-library(dplyr)
+```{r, results='show', purl=FALSE}
 filter(surveys, month == 1, species_id == "PM", sex == "F")
 ```
 
@@ -137,4 +130,3 @@ To select rows by position, use `slice()`:
 ```{r, results='show', purl=FALSE}
 slice(surveys, 1:10)
 ```
-
