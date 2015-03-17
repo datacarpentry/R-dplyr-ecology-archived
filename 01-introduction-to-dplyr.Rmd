@@ -37,3 +37,23 @@ The `dplyr` package makes each of these steps as fast and easy as possible by:
 * Using efficient data storage backends, so that you spend as little time
   waiting for the computer as possible.
   
+## Working with dplyr and the mammals data
+
+```{r, echo=FALSE, purl=TRUE}
+### Working with dplyr and the mammals data
+```
+
+Let's start exploring the capabilities of `dplyr` by looking at the basic single
+table data manipulation verbs:
+
+* `filter()` (and `slice()`)
+* `arrange()`
+* `select()` (and `rename()`)
+* `distinct()`
+* `mutate()` (and `transmute()`)
+* `summarise()`
+* `sample_n()` and `sample_frac()`
+
+Let's look at each of these using the mammals data.
+
+
