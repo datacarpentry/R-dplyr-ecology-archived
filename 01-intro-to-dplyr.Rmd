@@ -13,6 +13,113 @@ knitr::opts_chunk$set(results='hide', fig.path='img/')
 >
 > * Familiarize participants with dplyr package
 > * Introduce tbl_df data structure
-> * Understand the data manipulation verbs used in dplyr
+> * Introduce the simplified syntax of dplyr
 > * Understand the concept of piping
+
+## dplyr
+
+[`dplyr`](https://github.com/hadley/dplyr) package offers simple, clear and 
+efficient way of working with your data. The package makes the most common data
+manipulation steps as fast and easy as possible by:
+
+* Elucidating the most common data manipulation operations, so that your
+  options are helpfully constrained when thinking about how to tackle a
+  problem.
+* Providing simple functions that correspond to the most common
+  data manipulation verbs, so that you can easily translate your thoughts
+  into code.
+* Using efficient data storage backends, so that you spend as little time
+  waiting for the computer as possible.
+
+## From data frames to tbl_df 
+
+```{r section-title-1, echo=FALSE, purl=TRUE}
+### From data frames to tbl_df
+```
+
+dplyr introduces an extension to the regular data frame called `tbl` (a data
+frame `tbl`). The main advantage to using a `tbl` over a regular data frame 
+is the printing: `tbl` objects only print a few rows and all the columns that 
+fit on one screen, describing the rest of it as text. For all practical 
+purposes, `tbl` acts exactly like a regular data frame, i.e. syou can use the 
+familiar `$` or `[` indexing notation.
+
+Let's load the mammals survey data:
+
+```{r load-data, purl=FALSE}
+surveys <- read.csv('data/surveys.csv')
+head(surveys)
+```
+
+Next, let's convert the data frame into a `tbl` object.
+
+```{r, results='show', message=FALSE, purl=FALSE}
+# If dplyr is not yet installed, uncomment the next line
+# install.packages("dplyr")
+library(dplyr)
+
+surveys <- tbl_df(surveys)
+# We don't need to use head() anymore, just printing surveys works
+surveys
+```
+
+Note how the first row of print out (`Source: local data frame [35,549 x 9]`)
+shows you also the dimensions of your table obect: 35,549 rows x 9 columns.
+
+## dplyr syntax
+
+```{r section-header-2, echo=FALSE, purl=TRUE}
+### dplyr syntax
+```
+
+`dplyr` simplifies the syntax of many of the data manipulation operations that
+you have been doing in R. For example, using the `surveys` data we can select 
+all observations for females of the North American Deermouse 
+([*Peromyscus maniculatus*](https://en.wikipedia.org/wiki/Peromyscus_maniculatus), 
+see `"data/species.csv"` for the species information) made in January with:
+
+```{r filter-example, results='show', purl=FALSE}
+filter(surveys, month == 1, species_id == "PM" & sex == "F")
+```
+
+This is equivalent to the more conventional and verbose:
+
+```{r old-style-filtering, results='show', purl=FALSE}
+surveys[surveys$month == 1 & surveys$species_id == "PM" & surveys$sex == "F", ]
+```
+
+Another example of the simplified syntax is given how you sort your data frame
+using `arrange()` function in `dplyr`:
+
+```{r arrange-example, results='show', purl=FALSE}
+arrange(surveys, year, month, day)
+```
+
+which is equivalent to:
+
+```{r old-style-sorting, eval = FALSE, purl=FALSE}
+surveys[order(surveys$year, surveys$month, surveys$day), ]
+```
+
+Selecting all columns except `year`, `month` and `day` is as simple as:
+
+```{r select-example, results='show', purl=FALSE}
+select(surveys, -year, -month, -day)
+```
+
+Renaming columns can be done usign `rename()`:
+
+```{r rename-example, results='show', purl=FALSE}
+rename(surveys, hf_len = hindfoot_length)
+```
+
+whereas renaming columns using base R has been somewhat painful:
+
+```{r old-style-renaming, eval = FALSE, purl=FALSE}
+colnames(surveys) <- gsub("hindfoot_length", "hf_len", colnames(surveys))
+```
+
+The following lesson topics will dive deeper into the different functionality
+available in `dplyr`.
+
 
