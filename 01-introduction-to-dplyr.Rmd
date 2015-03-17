@@ -255,3 +255,17 @@ surveys_extended <- transmute(surveys,
 # Show the latest records
 tail(surveys_extended, n=10)
 ```
+
+## Summarise values with `summarise()`
+
+```{r, echo=FALSE, purl=TRUE}
+### Summarise values with `summarise()`
+```
+
+The last verb is `summarise()`, which collapses a data frame to a single row. 
+It's not very useful yet:
+
+```{r, results='show', purl=FALSE}
+summarise(surveys,
+  mean_weight = mean(weight, na.rm = TRUE))
+```
