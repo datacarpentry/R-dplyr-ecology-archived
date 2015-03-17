@@ -148,10 +148,10 @@ head(surveys_plus)
 > ```
 -->
 
-
-
 >
-> 1. Because the weight and hindfoot_length is not known for all data, you can filter the data to see some results:
+> 1. Because the weight and hindfoot_length is not known for all data, you can first filter the data to see some more meaningful results.
+Select for rows where the weight is above 100 g and the hindfoot_length is longer than 10 mm.
+
 <!---
 > ```{r}
 > head(filter(surveys_plus, weight > 100, hindfoot_length > 10))
@@ -159,16 +159,6 @@ head(surveys_plus)
 -->
 
 
-
-
-
-> ## Callout Box {.callout}
->
-> An aside of some kind.
-
-or an image from the `figs` directory:
-
-![this is the image's title](fig/example.svg "this is the image's alt text")
 
 
 
