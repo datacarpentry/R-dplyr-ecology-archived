@@ -85,18 +85,58 @@ surveys_DO <- filter(surveys, species_id == "DO")
 Filtering on multiple criteria (column names) can be done by adding extra filters:
 
 ```{r filter_mult}
-surveys_DM <- filter(surveys, species_id == "DM", year=="2002")
+surveys_DM <- filter(surveys, species_id == "DM", year >= "2001")
 ```
 
-> ## Challenge filtering rows on multiple factors
-> 
-> 1. Filter rows on two different species e.g. both DO and DM
+
+
+> ## Callout Box: Boolean operations and Filtering
 >
-> Have a look at the [Introduction to dplyr](http://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html#filter-rows-with-filter) for a hint.
+> When you filter on a criterium, you compare each row of data.frame. 
+> Using boolean operators, such as `AND` (`&`) and `OR` (`|`), you can combine different criteria.
+> Let's see how this works with some examples using a vector: 
+> 
+> * First create a vector with some numbers:
+    
+```{r boolean1}
+    u <- c(1, 4, 2, 5, 6, 3, 7)
+```
+
+> * Check which numbers ar smaller than e.g. three. This results in a vector of the same size
+>   with for each number a boolean value of `TRUE` or `FALSE`, depending if the respective number passed the criterium.
+
+```{r boolean2}
+    u < 3
+```
+
+> * If you want to select only the elements of the vector that are conform the selection criterium, you can use the following:
+
+```{r boolean3}
+    u[u < 3]
+```
+
+> * Selection criteria can be combined using  `AND` (`&`) and `OR` (`|`):
+
+    
+```{r boolean4}
+    # elements below 3 OR larger or equal to 4:
+    u[u < 3 | u >= 4]
+    # elements larger than 5 AND smaller than 1. 
+    u[u > 5 & u < 1 ]
+    # As this is mathematically impossible, nothing matches this condition!
+
+    u[u > 5 & u < 8]
+```
+
+> ## Challenge: filtering rows on multiple factors
+> 
+> 1. Boolean operators can also be used in dplyr! Filter rows on two different species (e.g. both DO and DM).
+>
+> Have a look at the [Introduction to dplyr](http://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html#filter-rows-with-filter) if you need a hint.
 
 ```{r filter_or, echo=FALSE, eval=FALSE}
-#If you want to include e.g. multiple species, you can use a boolean operator OR ("|"):
-surveys_DO_DM <- filter(surveys, species_id == "DO" | species_id == "DM", year == "1977")
+    #If you want to include e.g. multiple species, you can use a boolean operator OR ("|"):
+    surveys_DO_DM <- filter(surveys, species_id == "DO" | species_id == "DM", year == "1977")
 ```
 
 ## Ordering rows according to a column
