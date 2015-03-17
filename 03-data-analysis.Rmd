@@ -6,13 +6,17 @@ minutes: 60
 ---
 
 ```{r knitr-options, echo=FALSE, purl=FALSE}
-knitr::opts_chunk$set(results='hide', fig.path='img/')
+library(knitr)
+library(printr)  # devtools::install_github("yihui/printr")
+opts_chunk$set(results='hide', fig.path='img/')
 ```
 
-> ## Learning Objectives {.objectives}
+> ## Learning Objectives
 >
-> * Learning objective 1
-> * Learning objective 2
+> * Use `dplyr` to explore and understand the structure of a dataset
+> * Use `dplyr` to calculate basic statistics from the dataset
+> * Understand the concept of missing data and how to deal with them
+> * Join two datasets
 
 ```{r check-data, echo=FALSE}
 if (!file.exists("data/surveys.csv")) {
@@ -26,8 +30,8 @@ if (!file.exists("data/species.csv")) {
 ```
 
 ```{r load-data, echo=FALSE}
-surveys <- read.csv(file="data/surveys.csv")
-species <- read.csv(file="data/species.csv")
+surveys <- read.csv(file="data/surveys.csv", stringsAsFactors=FALSE)
+species <- read.csv(file="data/species.csv", stringsAsFactors=FALSE)
 ```
 
 ## Calculating statistics
@@ -53,10 +57,10 @@ distinct_species <- surveys %>%
 1. How many species were caught?
 1. Why is the species listed on line 14 blank?
 
-`dplyr` comes with the function `group_by` that allows you to calculate
-statistics based on the levels of a factor. For instance, we can calculate the
-number of individuals caught for each species by combining the functions
-`summarize()` (or `summarise()`) and `n()` on the "grouped by" dataset:
+The function `group_by` from `dplyr` allows you to calculate statistics based on
+the levels of a factor. For instance, we can calculate the number of individuals
+caught for each species by combining the functions `summarize()` (or
+`summarise()` if you prefer) and `n()` on the "grouped by" dataset:
 
 ```{r count-species, purl=FALSE}
 species_count <- surveys %>% group_by(species_id) %>%
@@ -94,7 +98,7 @@ with them.
 When dealing with simple statistics like the mean, the easiest way to ignore
 `NA` (the missing data) is to use `na.rm=TRUE` (`rm` stands for remove):
 
-```{r species-mean-weight-1}
+```{r species-mean-weight-2}
 surveys %>% group_by(species_id) %>%
             summarize(count=n(),
                       mean_weight=mean(weight, na.rm=TRUE))
@@ -143,3 +147,65 @@ species_stats <- surveys %>% group_by(species_id) %>% filter(!is.na(weight)) %>%
 
 1. Modify the `species_stats` object so that it also includes the mean and
    standard deviation for hindfoot_length
+
+## Joining datasets
+
+A common operation when managing data is to join (merge) the content of two
+tables based on unique identifiers. In our example, we have a `species` dataset
+that stores the correspondance between a two-letter code (`species_id`) and the
+full species name; and this two-letter code is also used in the `surveys`
+dataset to record the name of the species. We can use the `species_id` in these
+two datasets to join them.
+
+```{r example-datasets, echo=FALSE, results='markup', purl=TRUE}
+spex <- data.frame(species_id = c("AB", "AH", "AS", "BA"),
+                   genus = c("Amphispiza", "Ammospermophilus", "Ammodramus", "Baiomys"),
+                   species = c("bilineata", "harrisi", "savannarum", "taylori"),
+                   stringsAsFactors=FALSE)
+suex <- data.frame(species_id = c("BA", "AS", "", "BA"),
+                   sex = c("M", "M", "F", "F"),
+                   hindfoot_length = c(33, 26, 15, 25),
+                   weight = c(NA, 45, 33, 25),
+                   stringsAsFactors=FALSE)
+
+```
+
+A simplified version of the `surveys` dataset:
+
+`r suex`
+
+
+A simplified version of the `species` dataset:
+
+`r spex`
+
+
+There are four options depending on how you want to treat the missing values:
+- `inner_join(x, y)` only keeps the rows that have a match in both datasets;
+- `left_join(x, y)` keeps all the rows in `x` and fills with missing data the
+  rows that do not match in `y`
+- `right_join(x, y)` is the equivalent to `left_join(y, x)` but the order of the
+  columns will be different
+- `full_join(x, y)` includes all observations from `x` and `y`
+
+With our simplified examples:
+
+* **inner join** only data for survey records where species is not missing: `r inner_join(suex, spex)`
+* **left join** only survey data, missing species gets `NA` for genus and species: `r left_join(suex, spex)`
+* **right join** only survey data without missing species, also include species
+  not observed: `r right_join(suex, spex)`
+* **full join** all data from both datasets `r full_join(suex, spex)`
+
+## Challenge
+
+1. Which one of these type of joins are you going to use most often?
+1. If you want to add the species data (i.e., genus, species, taxa) to this
+   dataset, what type of join are you going to use?
+1. Create a new dataset, `surveys_species`, that adds the species data to the
+   surveys data
+
+<!--
+```{r challenge-join}
+surveys_species <- left_join(surveys, species)
+```
+-->
