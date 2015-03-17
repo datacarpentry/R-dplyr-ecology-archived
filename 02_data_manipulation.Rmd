@@ -5,7 +5,7 @@ subtitle: Data manipulation
 minutes: 45
 ---
 
-> ## Learning Objectives {.objectives}
+> ## Learning Objectives
 >
 > * being able to select a column from a data frame
 > * being able to filter rows on specific criteria
