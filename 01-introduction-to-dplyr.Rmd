@@ -222,3 +222,36 @@ distinct(select(surveys, plot_id, species_id))
 ```
 
 (This is very similar to `base::unique()` but should be much faster.)
+
+## Add new columns with `mutate()`
+
+```{r, echo=FALSE, purl=TRUE}
+### Add new columns with `mutate()`
+```
+
+As well as selecting from the set of existing columns, it's often useful to add 
+new columns that are functions of existing columns.  This is the job of 
+`mutate()`:
+
+```{r, results='show', purl=FALSE}
+# Create new columns hindfoot_length_cm (hindfoot length in cm) and julian_time
+# (day count from the first observation day 1977-07-16)
+surveys_extended <- mutate(surveys,
+              hindfoot_length_cm = hindfoot_length / 10,
+              julian_time = julian(as.Date(paste0(year, "-", month, "-", day)),
+                                   origin = as.Date("1977-07-16")))
+# Show only selected columns
+select(surveys_extended, record_id, year, month, day, species_id, 
+       hindfoot_length_cm, julian_time)
+```
+
+If you only want to keep the new variables, use `transmute()`:
+
+```{r, results='show', purl=FALSE}
+surveys_extended <- transmute(surveys,
+              hindfoot_length_cm = hindfoot_length / 10,
+              julian_time = julian(as.Date(paste0(year, "-", month, "-", day)),
+                                   origin = as.Date("1977-07-16")))
+# Show the latest records
+tail(surveys_extended, n=10)
+```
