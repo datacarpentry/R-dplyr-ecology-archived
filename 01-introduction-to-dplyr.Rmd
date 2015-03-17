@@ -269,3 +269,22 @@ It's not very useful yet:
 summarise(surveys,
   mean_weight = mean(weight, na.rm = TRUE))
 ```
+
+## Randomly sample rows with `sample_n()` and `sample_frac()`
+
+```{r, echo=FALSE, purl=TRUE}
+### Randomly sample rows with `sample_n()` and `sample_frac()`
+```
+
+You can use `sample_n()` and `sample_frac()` to take a random sample of rows,
+either a fixed number for `sample_n()` or a fixed fraction for `sample_frac()`.
+
+```{r, echo=FALSE, purl=TRUE}
+sample_n(surveys, 10)
+sample_frac(surveys, 0.01)
+```
+
+Use `replace = TRUE` to perform a bootstrap sample, and optionally weight the 
+sample with the `weight` argument.
+
+
