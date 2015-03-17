@@ -307,3 +307,79 @@ existing variables (`mutate()`) or collapse many values to a summary
 (`summarise()`). The remainder of the language comes from applying the five 
 functions to different types of data, like to grouped data, as described next.
 
+# Grouped operations
+
+These verbs are useful, but they become really powerful when you combine them 
+with the idea of "group by", repeating the operation individually on groups of 
+observations within the dataset. In `dplyr`, you use the `group_by()` function 
+to describe how to break a dataset down into groups of rows. You can then use 
+the resulting object in exactly the same functions as above; they'll 
+automatically work "by group" when the input is a grouped.
+
+The verbs are affected by grouping as follows:
+
+* grouped `select()` is the same as ungrouped `select()`, excepted that retains 
+  grouping variables are always retained. 
+* grouped `arrange()` orders first by grouping variables
+* `mutate()` and `filter()` are most useful in conjunction with window 
+  functions (like `rank()`, or `min(x) == x`)
+* `sample_n()` and `sample_frac()` sample the specified number/fraction of
+  rows in each group.
+* `slice()` extracts rows within each group.
+* `summarise()` is easy to understand and very useful, and is described in 
+  more detail below.
+
+Calculating grouped means is straightforward, let's calculate mean weight and
+hindfoot length for each species:
+
+```{r, results='show', purl=TRUE}
+by_species <- group_by(surveys, species_id)
+species_stats <- summarise(by_species,
+  count = n(),
+  weight = mean(weight, na.rm = TRUE),
+  hindfoot_length = mean(hindfoot_length, na.rm = TRUE))
+species_stats
+```
+
+Many species do not have recorded measures for `weight` and `hindfoot_length` at 
+all (indicated by `NaN`s). Let's filter out these species
+
+```{r, results='show', purl=TRUE}
+filter(species_stats, !is.nan(weight) & !is.nan(hindfoot_length))
+```
+
+You use `summarise()` with __aggregate functions__, which take a vector of 
+values, and return a single number. There are many useful functions in base R 
+like `min()`, `max()`, `mean()`, `sum()`, `sd()`, `median()`, and `IQR()`. dplyr 
+provides a handful of others:
+
+* `n()`: number of observations in the current group
+* `n_distinct(x)`: count the number of unique values in `x`.
+* `first(x)`, `last(x)` and `nth(x, n)` - these work
+  similarly to `x[1]`, `x[length(x)]`, and `x[n]` but give you more control
+  of the result if the value isn't present.
+
+For example, we could use these to find the number of species and the number of 
+individuals surveyed in each month over the whole surveying period (1977-2002):
+
+```{r, results='show', purl=TRUE}
+by_month <- group_by(surveys, month)
+summarise(by_month,
+  n_species = n_distinct(species_id),
+  n_individuals = n()
+)
+```
+
+When you group by multiple variables, each summary peels off one level of the 
+grouping. That makes it easy to progressively roll-up a dataset:
+
+```{r, results='show', purl=TRUE}
+daily <- group_by(surveys, year, month, day)
+(per_day   <- summarise(daily, records = n()))
+(per_month <- summarise(per_day, records = sum(records)))
+(per_year  <- summarise(per_month, records = sum(records)))
+```
+
+However you need to be careful when progressively rolling up summaries like 
+this: it's ok for sums and counts, but you need to think about weighting for 
+means and variances, and it's not possible to do exactly for medians.
