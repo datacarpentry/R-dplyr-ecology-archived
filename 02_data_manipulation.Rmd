@@ -78,13 +78,13 @@ One way to do this is to filter the data we want, and create a new temporary
 data frame, using the `filter()` function. For instance, if we just want to look at
 the animals of the species "DO":
 
-```{r filter, purl=FALSE}
+```{r filter}
 surveys_DO <- filter(surveys, species_id == "DO")
 ```
 
 Filtering on multiple criteria (column names) can be done by adding extra filters:
 
-```{r filter_mult, purl=FALSE}
+```{r filter_mult}
 surveys_DM <- filter(surveys, species_id == "DM", year=="2002")
 ```
 
@@ -94,12 +94,10 @@ surveys_DM <- filter(surveys, species_id == "DM", year=="2002")
 >
 > Have a look at the [Introduction to dplyr](http://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html#filter-rows-with-filter) for a hint.
 
-<!---
-If you want to include e.g. multiple species, you can use a boolean operator OR ("|"):
-```{r filter_or, purl=FALSE}
+```{r filter_or, echo=FALSE, eval=FALSE}
+#If you want to include e.g. multiple species, you can use a boolean operator OR ("|"):
 surveys_DO_DM <- filter(surveys, species_id == "DO" | species_id == "DM", year == "1977")
 ```
--->
 
 ## Ordering rows according to a column
 
@@ -126,13 +124,11 @@ head(surveys_desc)
 > 1. Arrange the surveys so you see the most recent month first, ascendingly according to the day
 > 
 
-<!---
-```{r arrange_challenge}
+```{r arrange_challenge, echo=FALSE, eval=FALSE}
 surveys_challenge <- arrange(surveys, desc(year), desc(month), day)
 # have a look at the data
 head(surveys_challenge)
 ```
--->
 
 ## Adding a column to our dataset
 
@@ -151,21 +147,16 @@ head(surveys_plus)
 > 
 > 1. Add a column calculating the ratio of hindfoot_lenght and weight. 
 
-<!---
->
-> ```{r, results='show'}
-> surveys_plus <- mutate(surveys, ratio = hindfoot_length / weight)
-> ```
--->
+```{r, echo=FALSE, eval=FALSE}
+surveys_plus <- mutate(surveys, ratio = hindfoot_length / weight)
+```
 
 > 2. Because the weight and hindfoot_length is not known for all data, you can first filter the data to see some more meaningful results.
 Select for rows where the weight is above 100 g and the hindfoot_length is longer than 10 mm.
 
-<!---
-> ```{r}
-> head(filter(surveys_plus, weight > 100, hindfoot_length > 10))
-> ```
--->
+```{r, echo=FALSE, eval=FALSE}
+head(filter(surveys_plus, weight > 100, hindfoot_length > 10))
+```
 
 
 
