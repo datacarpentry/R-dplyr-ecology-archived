@@ -54,6 +54,9 @@ table data manipulation verbs:
 * `summarise()`
 * `sample_n()` and `sample_frac()`
 
-Let's look at each of these using the mammals data.
+Let's look at each of these using the mammals data. First, let's load the data:
 
-
+```{r, purl=FALSE}
+surveys <- read.csv('data/surveys.csv')
+head(surveys)
+```
