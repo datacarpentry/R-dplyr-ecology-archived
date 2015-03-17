@@ -6,8 +6,8 @@ minutes: 10
 ---
 > ## Learning Objectives {.objectives}
 >
-> * being able to subset for a level
-> * being able to extract particular values from a `data.frame`
+> * being able to select a column from a data frame
+> * being able to filter rows on a specific criterium
 > * being able to add/remove columns and rows
 
 # Data manipulation
@@ -26,11 +26,13 @@ if (!file.exists("data/species.csv")) {
 ```
 
 ```{r dplyr.init}
+# if dplyr is not yet installed, uncomment the next line
 # install.packages("dplyr")
 library(dplyr)
 ```
 
-```{r}
+Read in the data in comma separated file into a data frame.
+```{r readSurveys}
 surveys <- read.csv(file="data/surveys.csv")
 ```
 
@@ -76,6 +78,11 @@ Filtering on multiple criteria (column names) can be done by adding extra filter
 ```{r filter_mult, purl=FALSE}
 surveys_DM <- filter(surveys, species_id == "DM", year=="2002")
 ```
+
+> ## Challenge Title {.challenge}
+> 
+> 1. Filter rows on two different species e.g. both DO and DM
+> Have a look at the [Introduction to dplyr](http://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html) for a hint.
 
 <!---
 If you want to include e.g. multiple species, you can use a boolean operator OR ("|"):
