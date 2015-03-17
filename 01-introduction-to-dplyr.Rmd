@@ -203,3 +203,22 @@ not that useful. Instead, use `rename()`:
 # Not evaluated
 rename(surveys, hf_len = hindfoot_length)
 ```
+
+## Extract distinct (unique) rows
+
+```{r, echo=FALSE, purl=TRUE}
+### Extract distinct (unique) rows
+```
+
+A common use of `select()` is to find out which values a set of variables takes. 
+This is particularly useful in conjunction with the `distinct()` verb which only 
+returns the unique values in a table.
+
+```{r, results='show', purl=FALSE}
+# Unique species
+distinct(select(surveys, species_id))
+# Which species are present in which plots
+distinct(select(surveys, plot_id, species_id))
+```
+
+(This is very similar to `base::unique()` but should be much faster.)
