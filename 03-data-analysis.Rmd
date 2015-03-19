@@ -75,6 +75,8 @@ if (!file.exists("data/species.csv")) {
                   "data/species.csv")
 }
 ```
+We will use `read.csv()` to load into memory (as a `data.frame`) the content of
+the CSV file.
 
 Next, read the `surveys.csv` into memory using `read.csv()`:
 
