@@ -5,10 +5,10 @@ subtitle: dplyr for data analysis
 minutes: 60
 ---
 
-```{r knitr-options, echo=FALSE, purl=FALSE}
-library(knitr)
-library(printr)  # devtools::install_github("yihui/printr")
-opts_chunk$set(results='hide', fig.path='img/')
+
+```{r setup, echo=FALSE, purl=FALSE}
+source("setup.R")
+
 ```
 
 > ## Learning Objectives
@@ -17,22 +17,6 @@ opts_chunk$set(results='hide', fig.path='img/')
 > * Use `dplyr` to calculate basic statistics from the dataset
 > * Understand the concept of missing data and how to deal with them
 > * Join two datasets
-
-```{r check-data, echo=FALSE}
-if (!file.exists("data/surveys.csv")) {
-    download.file("http://files.figshare.com/1919744/surveys.csv",
-                  "data/surveys.csv")
-}
-if (!file.exists("data/species.csv")) {
-    download.file("http://files.figshare.com/1919741/species.csv",
-                  "data/species.csv")
-}
-```
-
-```{r load-data, echo=FALSE}
-surveys <- read.csv(file="data/surveys.csv", stringsAsFactors=FALSE)
-species <- read.csv(file="data/species.csv", stringsAsFactors=FALSE)
-```
 
 # Presentation of the Survey Data
 
@@ -55,26 +39,6 @@ This is an example of what the survey dataset looks like:
     "66","8","19","1977","4","DM","F","35","46"
     "67","8","19","1977","7","DM","M","35","36"
 
-To load our survey data, we need to locate the `surveys.csv` file. We will use
-`read.csv()` to load into memory (as a `data.frame`) the content of the CSV
-file.
-
-* download [the data file`"surveys.csv"`](http://files.figshare.com/1919744/surveys.csv) from Figshare
-* put it in directory `"data"` within your working directory for these exercises
-
-```{r download-data, echo=FALSE, purl=TRUE}
-if (!file.exists("data/")) {
-	dir.create("data")
-}
-if (!file.exists("data/surveys.csv")) {
-    download.file("http://files.figshare.com/1919744/surveys.csv",
-                  "data/surveys.csv")
-}
-if (!file.exists("data/species.csv")) {
-    download.file("http://files.figshare.com/1919741/species.csv",
-                  "data/species.csv")
-}
-```
 We will use `read.csv()` to load into memory (as a `data.frame`) the content of
 the CSV file.
 

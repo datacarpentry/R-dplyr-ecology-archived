@@ -4,9 +4,9 @@ title: Introduction to dplyr
 subtitle: clean and efficient data maninulation
 minutes: 20
 ---
-  
-```{r knitr-options, echo=FALSE, purl=FALSE}
-knitr::opts_chunk$set(results='hide', fig.path='img/')
+
+```{r setup, echo=FALSE, purl=FALSE}
+source("setup.R")
 ```
 
 > ## Learning Objectives

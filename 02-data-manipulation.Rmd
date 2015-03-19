@@ -5,6 +5,11 @@ subtitle: Data manipulation
 minutes: 45
 ---
 
+
+```{r setup, echo=FALSE, purl=FALSE}
+source("setup.R")
+```
+
 > ## Learning Objectives
 >
 > * being able to select a column from a data frame
@@ -13,17 +18,6 @@ minutes: 45
 > * being able to add a column as a function of existing columns
 
 ## Load data
-
-```{r check-data, echo=FALSE}
-if (!file.exists("data/surveys.csv")) {
-    download.file("http://files.figshare.com/1919744/surveys.csv",
-                  "data/surveys.csv")
-}
-if (!file.exists("data/species.csv")) {
-    download.file("http://files.figshare.com/1919741/species.csv",
-                  "data/species.csv")
-}
-```
 
 ```{r dplyr.init}
 # if dplyr is not yet installed, uncomment the next line
