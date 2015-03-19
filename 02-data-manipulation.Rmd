@@ -55,7 +55,7 @@ hindfoot_length_column <- surveys$hindfoot_length
 head(hindfoot_length_column)
 ```
 
-Using dplyr, you can do operations on a particular column, by selecting it using the `select()` function. 
+Using dplyr, you can do operations on a particular column, by selecting it using the `select()` function.
 The first argument is the data frame, the second argument the column name you want to select.
 You can use `names(surveys)` or `colnames(surveys)` to remind yourself of the column names.
 
@@ -92,128 +92,123 @@ surveys_DM <- filter(surveys, species_id == "DM", year >= "2001")
 
 > ## Callout Box: Boolean operations and Filtering
 >
-> When you filter on a criterium, you compare each row of data.frame. 
-> Using boolean operators, such as AND (`&`) and OR (`|`), you can combine different criteria.
-> Let's see how this works with some examples using a vector: 
-> 
+> When you filter on a condition, you can select rows of the `data.frame`
+> that match this condition. Let's see how this works with some examples using a
+> vector:
+>
 > * First create a vector with some numbers:
-    
+
 ```{r boolean1}
     u <- c(1, 4, 2, 5, 6, 3, 7)
 ```
 
-> * Check which numbers ar smaller than e.g. three. This results in a vector of the same size
->   with for each number a boolean value of `TRUE` or `FALSE`, depending if the respective number passed the criterium.
+> * We have already seen that we can use the positions of the elements to select
+>   them (e.g., `u[3]` would return 2). We can also select elements by giving
+>   them a vector of logicals (`TRUE` and `FALSE`):
 
-```{r boolean2}
+```{r boolean-select, results='show'}
+   u <- u[c(TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE)]
+```
+
+> * When we ask R whether the content of a vector matches a given condition, it
+>   returns a vector of the same size with each element being `TRUE` or `FALSE`,
+>   depending if the elements of the vector match the condition:
+
+```{r boolean2, results='show'}
     u < 3
 ```
 
-> * To know how many elements pass the criterium, you can use `sum()`
-
-```{r boolean2b}
-    sum(u < 3)
-```
-
-> * If you want to select only the elements of the vector that are conform the selection criterium, you can use the following:
+> * If you want to select only the elements of the vector that match the
+>   condition, we can combine these two concepts:
 
 ```{r boolean3}
     u[u < 3]
 ```
 
-> * To select elements that do not conform to the criterium, the NOT operator `!` can be used:
+> * To negate the condition, we can use `!` in front of it:
 
 ```{r boolean5}
-    u[! u > 5]
+    u[! u < 3]
 ```
 
-> * Selection criteria can be combined using AND (`&`) and OR (`|`):
- 
-```{r boolean4}
-    # elements below 3 OR larger or equal to 4:
-    u[u < 3 | u >= 4]
-    # elements larger than 5 AND smaller than 1. 
-    # As this is mathematically impossible, nothing matches this condition!
-    u[u > 5 & u < 1 ]
+> * To know the number of elements that match the condition, we can use the
+>   `sum()` function on the condition, and `mean()` will provide the proportion
+>   of elements that match the condition
 
-    u[u > 5 & ! u < 1 ]
+```{r boolean2b}
+    sum(u < 3)
+    mean(u < 3)
+```
+
+> * You can combine different conditions by using `&` (AND) and `|` (OR):
+
+```{r boolean4}
+    ## elements less than 3 OR greater or equal to 4:
+    u[u < 3 | u >= 4]
+    ## elements greater than 5 AND less than 1.
+    ## As this is mathematically impossible, nothing matches this condition!
+    u[u > 5 & u < 1 ]
+    u[! (u > 5 & u < 1)]
     u[u > 5 & u < 7]
 ```
 
-
-
-
 > ## Challenge: filtering rows on multiple factors
-> 
-> 1. Boolean operators can also be used in dplyr! Filter rows on two different species (e.g. both DO and DM).
->
-> Have a look at the [Introduction to dplyr](http://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html#filter-rows-with-filter) if you need a hint.
+
+> To select rows from your data using `dplyr`, you can use these conditional
+> statements with the `filter()` function. How many specimens of the species
+> "DO" and "DM" were collected in 1977.
 
 ```{r filter_or, echo=FALSE, eval=FALSE}
-    #If you want to include e.g. multiple species, you can use a boolean operator OR ("|"):
+    ## If you want to include multiple species, you can use a boolean operator | (OR):
     surveys_DO_DM <- filter(surveys, species_id == "DO" | species_id == "DM", year == "1977")
 ```
 
 ## Ordering rows according to a column
 
-In stead of filtering rows, you sometimes just want to reorder the data. 
-This can be done using `arrange()`. It takes a data frame as first argument and a list of
-column names. 
+The function `arrange()` lets you reorder your data in asending order:
 
 ```{r arrange}
-surveys_order <- arrange(surveys, year, month, day)
+surveys_order <- arrange(surveys, weight)
 # have a look
 head(surveys_order)
 ```
 
-Default rows are ordered ascendingly, you can reverse this using `desc()`:
+You can reverse the order using `desc()`, and order several columns at once (the
+order in which you specify the columns matter):
 
 ```{r arrange_desc}
-surveys_desc <- arrange(surveys, desc(weight))
+surveys_desc <- arrange(surveys, desc(year), desc(month), desc(day))
 # have a look at the data
 head(surveys_desc)
-```
-
-> ## Challenge ordering of rows
-> 
-> 1. Arrange the surveys so you see the most recent month first, ascendingly according to the day
-> 
-
-```{r arrange_challenge, echo=FALSE, eval=FALSE}
-surveys_challenge <- arrange(surveys, desc(year), desc(month), day)
-# have a look at the data
-head(surveys_challenge)
 ```
 
 ## Adding a column to our dataset
 
 Sometimes, you may have to add a new column to your dataset that represents a
-new variable, based on existing columns. You can do this using the function `mutate()`. 
+new variable, based on existing columns. You can do this using the function
+`mutate()`.
 
-Here we will add a column, converting the hindfoot_length from mm to cm:
+Here we will add a column, converting the `hindfoot_length` from mm to cm:
 
 ```{r mutate}
+
 surveys_plus <- mutate(surveys, hindfoot_length_cm = hindfoot_length / 10)
 head(surveys_plus)
 
 ```
 
 > ## Challenge adding column
-> 
-> 1. Add a column calculating the ratio of hindfoot_lenght and weight. 
+>
+> 1. Add a column calculating the ratio of hindfoot_lenght and weight.
 
 ```{r, echo=FALSE, eval=FALSE}
 surveys_plus <- mutate(surveys, ratio = hindfoot_length / weight)
 ```
 
 > 2. Because the weight and hindfoot_length is not known for all data, you can first filter the data to see some more meaningful results.
+
 Select for rows where the weight is above 100 g and the hindfoot_length is longer than 10 mm.
 
 ```{r, echo=FALSE, eval=FALSE}
-head(filter(surveys_plus, weight > 100, hindfoot_length > 10))
+filter(surveys_plus, weight > 100, hindfoot_length > 10)
 ```
-
-
-
-
-
