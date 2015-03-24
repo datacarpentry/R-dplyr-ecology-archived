@@ -203,12 +203,16 @@ x
 
 A simplified version of the `surveys` dataset:
 
-`r kable(suex)`
+```{r} 
+kable(suex)
+```
 
 
 A simplified version of the `species` dataset:
 
-`r spex`
+```{r} 
+spex
+```
 
 
 There are four options depending on how you want to treat the missing values:
@@ -221,11 +225,23 @@ There are four options depending on how you want to treat the missing values:
 
 With our simplified examples:
 
-* **inner join** only data for survey records where species is not missing: `r inner_join(suex, spex)`
-* **left join** only survey data, missing species gets `NA` for genus and species: `r left_join(suex, spex)`
+* **inner join** only data for survey records where species is not missing: 
+```{r inner_join} 
+inner_join(suex, spex)
+```
+* **left join** only survey data, missing species gets `NA` for genus and species: 
+```{r left_join} 
+left_join(suex, spex)
+```
 * **right join** only survey data without missing species, also include species
-  not observed: `r right_join(suex, spex)`
-* **full join** all data from both datasets `r full_join(suex, spex)`
+  not observed: 
+```{r right_join} 
+right_join(suex, spex)
+```
+* **full join** all data from both datasets
+```{r full_join}
+full_join(suex, spex)
+```
 
 ## Challenge
 
