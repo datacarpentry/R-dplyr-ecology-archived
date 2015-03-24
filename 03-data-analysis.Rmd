@@ -243,11 +243,14 @@ full_join(suex, spex)
 1. Which one of these type of joins are you going to use most often?
 1. If you want to add the species data (i.e., genus, species, taxa) to this
    dataset, what type of join are you going to use?
-1. Create a new dataset, `surveys_species`, that adds the species data to the
+1. The file `species.csv` contains more information about the observed species. It uses the same `species_id` values to identify each species.
+   We can load this file with `species <- read.csv('data/species.csv')`
+   Create a new dataset, `surveys_species`, that adds the species data to the
    surveys data
 
 <!--
 ```{r challenge-join}
+species <- read.csv('data/species.csv')
 surveys_species <- left_join(surveys, species)
 ```
 -->
