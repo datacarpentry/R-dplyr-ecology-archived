@@ -194,11 +194,6 @@ suex <- data.frame(species_id = c("BA", "AS", "", "BA"),
                    weight = c(NA, 45, 33, 25),
                    stringsAsFactors=FALSE)
 
-options(digits = 4)
-set.seed(123)
-x = matrix(rnorm(40), 5)
-dimnames(x)[[2]] <- head(letters, ncol(x))
-x
 ```
 
 A simplified version of the `surveys` dataset:
