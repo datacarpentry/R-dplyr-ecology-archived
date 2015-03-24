@@ -11,4 +11,5 @@ if (!file.exists("data/species.csv")) {
 }
 
 ## knitr options
+library(knitr)
 knitr::opts_chunk$set(results='hide', fig.path='img/R-dplyr-')
