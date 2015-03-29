@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Introduction to dplyr
-subtitle: clean and efficient data maninulation
+subtitle: Clean and efficient data manipulation
 minutes: 20
 ---
 
@@ -136,7 +136,7 @@ to describe how to break a dataset down into groups of rows.
 Let's calculate mean weight and hindfoot length for each species:
 
 ```{r group-by-example, results='show', purl=FALSE}
-by_species <- group_by(surveys, species_id)
+by_species    <- group_by(surveys, species_id)
 species_stats <- summarise(by_species,
   count = n())
 species_stats
@@ -148,7 +148,7 @@ species_stats
 ### Chaining (piping)
 ```
 
-Most of the time your data manipulation will constiture of a sequence of
+Most of the time your data manipulation will constitute of a sequence of
 operations applied on your data. You either have to do it step-by-step, as we
 just did:
 
