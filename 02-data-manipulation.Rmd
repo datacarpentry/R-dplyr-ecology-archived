@@ -159,7 +159,7 @@ surveys_DM <- filter(surveys, species_id == "DM", year >= "2001")
 
 ## Ordering rows according to a column
 
-The function `arrange()` lets you reorder your data in asending order:
+The function `arrange()` lets you reorder your data in ascending order:
 
 ```{r arrange}
 surveys_order <- arrange(surveys, weight)

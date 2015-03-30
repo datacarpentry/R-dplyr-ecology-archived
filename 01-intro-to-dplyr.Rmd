@@ -64,7 +64,7 @@ surveys
 ```
 
 Note how the first row of print out (`Source: local data frame [35,549 x 9]`)
-shows you also the dimensions of your table obect: 35,549 rows x 9 columns.
+shows you also the dimensions of your table object: 35,549 rows x 9 columns.
 
 ## dplyr syntax
 
@@ -107,7 +107,7 @@ Selecting all columns except `year`, `month` and `day` is as simple as:
 select(surveys, -year, -month, -day)
 ```
 
-Renaming columns can be done usign `rename()`:
+Renaming columns can be done using `rename()`:
 
 ```{r rename-example, results='show', purl=FALSE}
 rename(surveys, hf_len = hindfoot_length)

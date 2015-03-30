@@ -28,7 +28,7 @@ We are studying the species and weight and hindfoot length of animals caught in 
 area.  The dataset is stored as a `.csv` files in an (online repository)[http://figshare.com/articles/Portal_Project_Teaching_Database/1314459]: each row
 holds information for a single animal, and the columns represent `record_id`
 `month`, `day`, `year`, `plot_id`, `species_id` (a 2 letter code, see the
-`species.csv` file for correspondance), `sex` ("M" for males and "F" for
+`species.csv` file for correspondence), `sex` ("M" for males and "F" for
 females), `hindfoot_length` (in millimeters), and `weight` (in grams).
 
 This is an example of what the survey dataset looks like:
@@ -178,7 +178,7 @@ species_stats <- surveys %>% group_by(species_id) %>% filter(!is.na(weight)) %>%
 
 A common operation when managing data is to join (merge) the content of two
 tables based on unique identifiers. In our example, we have a `species` dataset
-that stores the correspondance between a two-letter code (`species_id`) and the
+that stores the correspondence between a two-letter code (`species_id`) and the
 full species name; and this two-letter code is also used in the `surveys`
 dataset to record the name of the species. We can use the `species_id` in these
 two datasets to join them.
