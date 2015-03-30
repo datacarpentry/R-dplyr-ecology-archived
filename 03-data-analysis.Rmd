@@ -233,17 +233,11 @@ left_join(suex, spex)
 * **right join** only survey data without missing species, also include species
   not observed: 
 ```{r right_join} 
-## Check dplyr version for right_join(x,y)
-if(compareVersion(as.character(packageVersion("dplyr")), "0.4.0") >=0) {
-  right_join(suex, spex)
-}
+right_join(suex, spex)
 ```
 * **full join** all data from both datasets
 ```{r full_join}
-## Check dplyr version for right_join(x,y)
-if(compareVersion(as.character(packageVersion("dplyr")), "0.4.0") >=0) {
-  full_join(suex, spex)
-}
+full_join(suex, spex)
 ```
 
 ## Challenge

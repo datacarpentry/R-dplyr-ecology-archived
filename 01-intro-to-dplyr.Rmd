@@ -136,7 +136,7 @@ to describe how to break a dataset down into groups of rows.
 Let's calculate mean weight and hindfoot length for each species:
 
 ```{r group-by-example, results='show', purl=FALSE}
-by_species    <- group_by(surveys, species_id)
+by_species <- group_by(surveys, species_id)
 species_stats <- summarise(by_species,
   count = n())
 species_stats
