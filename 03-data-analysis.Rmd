@@ -218,6 +218,8 @@ There are four options depending on how you want to treat the missing values:
   columns will be different
 - `full_join(x, y)` includes all observations from `x` and `y`
 
+Note: `right_join(x, y)` and `full_join(x, y)` were introduced in dplyr version 0.4.0
+
 With our simplified examples:
 
 * **inner join** only data for survey records where species is not missing: 
@@ -231,7 +233,7 @@ left_join(suex, spex)
 * **right join** only survey data without missing species, also include species
   not observed: 
 ```{r right_join} 
-right_join(suex, spex)
+  right_join(suex, spex)
 ```
 * **full join** all data from both datasets
 ```{r full_join}
