@@ -1,8 +1,6 @@
-#!/bin/env Rscript
-
 ## file structure
-
 if (! file.exists("data")) dir.create("data")
+
 if (!file.exists("data/surveys.csv")) {
     download.file("http://files.figshare.com/1919744/surveys.csv",
                   "data/surveys.csv")
