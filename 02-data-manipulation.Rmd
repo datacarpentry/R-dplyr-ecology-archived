@@ -36,8 +36,8 @@ In particular for larger datasets, it can be tricky to remember the column
 number that corresponds to a particular variable. (is hindfoot length in column 7
 or 9? oh, right... they are in column 8). In some cases, in which column the
 variable will be can change if the script you are using adds or removes
-columns. It's therefore often better to use column names to refer to a
-particular variable, and it makes your code easier to read and your intentions
+columns. It is recommended to use column names to refer to a
+particular variable, as it makes your code easier to read, and your intentions
 clearer.
 
 In the introduction to R, we have covered a first way of selecting columns, using the `$` sign.
@@ -159,7 +159,7 @@ surveys_DM <- filter(surveys, species_id == "DM", year >= "2001")
 
 ## Ordering rows according to a column
 
-The function `arrange()` lets you reorder your data in asending order:
+The function `arrange()` lets you reorder your data in ascending order:
 
 ```{r arrange}
 surveys_order <- arrange(surveys, weight)

@@ -67,7 +67,7 @@ surveys
 ```
 
 Note how the first row of print out (`Source: local data frame [35,549 x 9]`)
-shows you also the dimensions of your table obect: 35,549 rows x 9 columns.
+shows you also the dimensions of your table object: 35,549 rows x 9 columns.
 
 ## Working with dplyr and the mammals data
 
@@ -148,7 +148,7 @@ Use `desc()` to order a column in descending order:
 arrange(surveys, desc(hindfoot_length))
 ```
 
-`arrange()` is a straighforward wrapper around `order()` that requires less 
+`arrange()` is a straightforward wrapper around `order()` that requires less 
 typing. The previous code is equivalent to:
 
 ```{r, eval = FALSE, purl=FALSE}

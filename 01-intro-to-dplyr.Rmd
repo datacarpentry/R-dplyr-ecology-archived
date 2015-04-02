@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Introduction to dplyr
-subtitle: clean and efficient data maninulation
+subtitle: Clean and efficient data manipulation
 minutes: 20
 ---
 
@@ -64,7 +64,7 @@ surveys
 ```
 
 Note how the first row of print out (`Source: local data frame [35,549 x 9]`)
-shows you also the dimensions of your table obect: 35,549 rows x 9 columns.
+shows you also the dimensions of your table object: 35,549 rows x 9 columns.
 
 ## dplyr syntax
 
@@ -107,7 +107,7 @@ Selecting all columns except `year`, `month` and `day` is as simple as:
 select(surveys, -year, -month, -day)
 ```
 
-Renaming columns can be done usign `rename()`:
+Renaming columns can be done using `rename()`:
 
 ```{r rename-example, results='show', purl=FALSE}
 rename(surveys, hf_len = hindfoot_length)
@@ -148,7 +148,7 @@ species_stats
 ### Chaining (piping)
 ```
 
-Most of the time your data manipulation will constiture of a sequence of
+Most of the time your data manipulation will constitute of a sequence of
 operations applied on your data. You either have to do it step-by-step, as we
 just did:
 
